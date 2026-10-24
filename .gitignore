@@ -1,0 +1,11 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# agent scratch
+tmp/
+
+# secrets and local settings (.claude itself is tracked: it holds the SessionStart hook)
+credentials.txt
+!.claude
+.claude/settings.local.json
