@@ -9,28 +9,6 @@
           }
         ]
       }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "mcp__claude-in-chrome__.*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Wrong browser. The shared logged-in Chrome is the Playwright MCP (mcp__playwright__*): read tools.md > Browser, start with browser_run_code_unsafe filename tools/shared-chrome/new-window.js.' >&2; exit 2"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "mcp__playwright__browser_(navigate|navigate_back|click|select_option|press_key)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"The snapshot above may predate the page scripts. Before reading the page, run browser_run_code_unsafe with filename %s/tools/shared-chrome/wait-ready.js, then browser_snapshot. If ready is false, do not conclude anything from the page.\"}}' \"$CLAUDE_PROJECT_DIR\""
-          }
-        ]
-      }
     ]
   }
 }
