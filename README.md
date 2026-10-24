@@ -36,7 +36,7 @@ There is no installer. The only code is three small Python and shell scripts tha
 They run on [Zucchini](https://zucchini.chat), which keeps agent chats alive on your own always-on machine: chats wake themselves with scheduled messages, react to watches and message each other, and you read and steer them from your phone. Without it, each one runs from cron or launchd with `claude -p`. Details: `agents/CLAUDE.md`.
 
 ## Keep it private
-Everything you tell the agent lands in this repo. Push it only to a private remote; setup moves `origin` there and keeps this public repo as `upstream`. Secrets go in `credentials.txt`, which git ignores.
+Everything you tell the agent lands in this repo. Push it only to a private remote; setup points `origin` there. Updates from this scaffold arrive through the repo cleaner, which brings each new change over by meaning (`agents/repo-cleaner.md` > "Scaffold updates"). Secrets go in `credentials.txt`, which git ignores.
 
 ## For the agent reading this
 If `CLAUDE.md` still starts with the "Not set up yet" line, run `setup.md` first. After setup, follow `CLAUDE.md`; this file is for humans.

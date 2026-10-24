@@ -4,7 +4,7 @@ Run this when `CLAUDE.md` still starts with the "Not set up yet" line. Goal: eve
 
 ## Before the questions
 1. Say what is coming in two lines: about 15 minutes of questions, one at a time; any can be skipped and filled in later.
-2. Private remote. This clone still points at the public scaffold, and everything the owner says will land in commits. Ask for an empty **private** repo of theirs (GitHub, GitLab, any git host), then `git remote rename origin upstream && git remote add origin <url> && git push -u origin master`. Until they have one, commit locally and skip the push.
+2. Private remote. This clone still points at the public scaffold, and everything the owner says will land in commits. Ask for an empty **private** repo of theirs (GitHub, GitLab, any git host), then, before switching, write `git remote get-url origin` and `git rev-parse HEAD` into `agents/repo-cleaner.md` > "Scaffold updates" (Source and Last ported), and run `git remote set-url origin <url> && git push -u origin master`. Until they have one, commit locally and skip the push.
 
 ## The questions
 One at a time, in this order. A short follow-up when an answer is vague; never ask what a later question or a search will answer anyway.
