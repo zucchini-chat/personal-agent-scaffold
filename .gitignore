@@ -5,6 +5,10 @@ __pycache__/
 # agent scratch
 tmp/
 
+# the shared browser's profile (logins) and Playwright MCP output
+.playwright-profile/
+.playwright-mcp/
+
 # secrets and local settings (.claude itself is tracked: it holds the SessionStart hook)
 credentials.txt
 !.claude

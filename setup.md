@@ -28,5 +28,11 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 - Calendar: if a calendar command already works, write `tools/calendar-today` (executable, prints today's and tomorrow's events one per line) and run `python3 tools/overview.py` to check it.
 - Delete the "Not set up yet" line, commit by explicit path, push.
 
+## Shared browser (optional, macOS)
+One always-on Chrome with its own profile that every agent drives; it is what lets agents do computer work on sites (forms, uploads, accounts). Rules: `tools.md` > "Browser". Needs Google Chrome and Node.js; if either is missing, ask before installing it. Offer the step; skip it if they decline.
+1. Install and start the launchd agent: `sed "s|__REPO__|$PWD|" tools/shared-chrome/com.personal-agent.shared-chrome.plist > ~/Library/LaunchAgents/com.personal-agent.shared-chrome.plist && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.personal-agent.shared-chrome.plist`. Moving the repo later means running this again.
+2. Check: `curl -s 127.0.0.1:9222/json/version` prints a `Browser` line. Claude Code picks up the `playwright` server from `.mcp.json` on its next start (approve it when asked); for Codex, add the server as `tools.md` > "Browser" says.
+3. Ask the owner to log in, in that Chrome's window, to the sites they want agents to use (mail, calendar, shops, work tools). Say plainly that this only saves time: agents can log in by themselves later in this profile, and every login made there stays for all agents.
+
 ## The end
 Tell them in a few lines: what was written, which placeholders remain, and the next step - switch on the Chief of Staff rhythm (`agents/chief-of-staff.md` > "Switch on"), then one background agent at a time from `agents/CLAUDE.md`.

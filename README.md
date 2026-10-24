@@ -11,7 +11,7 @@ It is a plain git repo of markdown files. The agent reads them, keeps them curre
 2. Start `claude` (or `codex`) in that folder and say hi.
 3. The agent sees that `CLAUDE.md` is still a template and runs a setup interview (`setup.md`, about 15 minutes): your goals in priority order, who you are, where home is, how you want to be addressed, the parts of life you want help with. It writes your answers into `CLAUDE.md`, makes a folder per topic, and moves the repo to a private remote of yours.
 
-There is no installer. The only code is three small Python and shell scripts that need nothing beyond Python 3 and git.
+There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git, plus an optional shared browser (macOS, Chrome and Node.js) that setup can switch on.
 
 ## What is inside
 | Path | What |
@@ -23,6 +23,7 @@ There is no installer. The only code is three small Python and shell scripts tha
 | `agents/` | Background agents, one playbook each, all off until you switch one on. |
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |
 | `tools/overview.py` | Runs at every Claude Code session start: your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
+| `tools/shared-chrome/` | The shared browser: one always-on Chrome with its own logged-in profile, driven by stock Playwright MCP over CDP (`.mcp.json`), so every agent can work on sites with your logins. A launchd keepalive, a window per agent, and a page-readiness check. |
 
 ## Background agents
 - **Morning brief and stop call:** the daily rhythm of the `Chief of Staff` chat - the day's plan in the morning, an honest look back and tomorrow in three lines in the evening.
