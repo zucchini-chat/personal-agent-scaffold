@@ -12,8 +12,9 @@ Not plugged in. For Gmail, `gog` (see Calendar) covers search, read, labels, dra
 Built-in web search and fetch work out of the box. A search API with its own MCP server or key is worth adding for non-US, recent or primary-source questions.
 
 ## Browser (shared, logged in)
-[shared-agent-browser](https://github.com/<owner>/shared-agent-browser): one always-on Chrome with its own logged-in profile, shared by every agent at once. Claude Code gets it as a plugin (MCP server, a skill with the rules, a hook that blocks Claude in Chrome); Codex and other clients as an MCP server. The server gives each session its own window and waits for the page after every action; the plugin's `shared-browser` skill carries the rest (logins, payments, downloads, popups, Chrome down). Set up in `setup.md` > "Shared browser".
+[shared-agent-browser](https://github.com/zucchini-chat/shared-agent-browser): one always-on Chrome with its own logged-in profile, shared by every agent at once. Claude Code gets it as a plugin (MCP server, a skill with the rules, a hook that blocks Claude in Chrome); Codex and other clients as an MCP server. The server gives each session its own window and waits for the page after every action; the plugin's `shared-browser` skill carries the rest (logins, payments, downloads, popups, Chrome down). Set up in `setup.md` > "Shared browser".
 - Parallel browser jobs need separate sessions, since subagents share their parent's: `claude -p "<job>" > tmp/<job>.log & echo $! >> tmp/<batch>.pids`, with the permissions the job needs. Wait on those PIDs, never on a `pgrep` pattern: `while ps -p $(paste -sd, tmp/<batch>.pids) >/dev/null; do sleep 30; done`.
+- Chrome down: `npx -y github:zucchini-chat/shared-agent-browser status` shows it; with this setup's keep-alive on macOS, `launchctl kickstart -k gui/$(id -u)/shared-agent-browser` restarts it. Never start a second Chrome on another profile: it has none of the logins.
 - Saved cards: Chrome's autofill popup does not react to automation, so paying with a saved card needs a helper of its own (none ships here).
 
 ## Money (optional)
