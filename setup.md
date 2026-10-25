@@ -29,9 +29,9 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 - Delete the "Not set up yet" line, commit by explicit path, push.
 
 ## Shared browser (optional)
-One always-on Chrome with its own profile that every agent drives: [shared-agent-browser](https://github.com/zucchini-chat/shared-agent-browser). It is what lets agents do computer work on sites (forms, uploads, accounts). Rules: `tools.md` > "Browser". Needs Google Chrome and Node.js; if either is missing, ask before installing it. Offer the step; skip it if they decline.
-1. Claude Code: `claude plugin marketplace add zucchini-chat/shared-agent-browser && claude plugin install shared-agent-browser@shared-agent-browser`. Codex: `codex mcp add browser -- npx -y github:zucchini-chat/shared-agent-browser`.
-2. Keep Chrome running: on macOS `npx -y github:zucchini-chat/shared-agent-browser install` (a launchd agent); elsewhere run `npx -y github:zucchini-chat/shared-agent-browser start` from the init system. Check with `npx -y github:zucchini-chat/shared-agent-browser status`. The new tools show up at the next session start.
+One always-on Chrome with its own profile that every agent drives: [shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp). It is what lets agents do computer work on sites (forms, uploads, accounts). Rules: `tools.md` > "Browser". Needs Google Chrome and Node.js; if either is missing, ask before installing it. Offer the step; skip it if they decline.
+1. Claude Code, from this repo: `claude plugin marketplace add zucchini-chat/shared-chrome-mcp --scope project && claude plugin install shared-chrome-mcp@shared-chrome-mcp --scope project`. Then set `"autoUpdate": true` on the `shared-chrome-mcp` entry under `extraKnownMarketplaces` in `.claude/settings.json`, so new versions arrive by themselves, and commit that file. Codex (it fetches the latest at every start): `codex mcp add browser -- npx -y github:zucchini-chat/shared-chrome-mcp`.
+2. Keep Chrome running: on macOS `npx -y github:zucchini-chat/shared-chrome-mcp install` (a launchd agent); elsewhere run `npx -y github:zucchini-chat/shared-chrome-mcp start` from the init system. Check with `npx -y github:zucchini-chat/shared-chrome-mcp status`. The new tools show up at the next session start.
 3. Ask the owner to log in, in that Chrome's window, to the sites they want agents to use (mail, calendar, shops, work tools). Say plainly that this only saves time: agents can log in by themselves later in this profile, and every login made there stays for all agents.
 
 ## The end

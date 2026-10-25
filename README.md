@@ -1,5 +1,3 @@
-> **DRAFT** - this README gets rewritten before anyone sees it.
-
 # personal-agent-scaffold
 
 A starting point for a personal AI agent: a chief of staff and coach that runs in Claude Code or Codex, keeps your schedule against your goals, does the computer work itself, and hands you only what truly needs you. Plus background agents you switch on one at a time.
@@ -11,7 +9,7 @@ It is a plain git repo of markdown files. The agent reads them, keeps them curre
 2. Start `claude` (or `codex`) in that folder and say hi.
 3. The agent sees that `CLAUDE.md` is still a template and runs a setup interview (`setup.md`, about 15 minutes): your goals in priority order, who you are, where home is, how you want to be addressed, the parts of life you want help with. It writes your answers into `CLAUDE.md`, makes a folder per topic, and moves the repo to a private remote of yours.
 
-There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git, plus an optional shared browser ([shared-agent-browser](https://github.com/zucchini-chat/shared-agent-browser): one always-on, logged-in Chrome for all your agents; Chrome and Node.js) that setup can switch on.
+There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git, plus an optional shared browser ([shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp): one always-on, logged-in Chrome for all your agents; Chrome and Node.js) that setup can switch on.
 
 ## What is inside
 | Path | What |
