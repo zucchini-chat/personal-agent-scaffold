@@ -13,7 +13,7 @@ Index only: each playbook owns its schedule and steps; if a time here drifts fro
 | Weekly strategy review | Wed 02:00 | `weekly review` | `weekly-review.md` | off |
 | Repo cleaner | Sat 02:00 | `repo cleaner` | `repo-cleaner.md` | off |
 | Agent-fail bench | on demand; replay when a new model ships | any chat | `../bench/CLAUDE.md` | off |
-| Mail desk (reads the whole inbox) | continuous | `email watcher` | `mail-desk.md` | off |
+| Mail desk (reads the whole inbox; mail guard recommended) | continuous | `email watcher` | `mail-desk.md` | off |
 
 ## How they run on Zucchini
 Zucchini (zucchini.chat) keeps Claude Code and Codex chats running on your own always-on machine; you read and steer them from your phone or desktop. Three of its pieces carry these agents:

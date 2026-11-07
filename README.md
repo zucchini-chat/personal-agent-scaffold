@@ -23,6 +23,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `tools/overview.py` | Runs at every Claude Code session start: your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
 | `tools/git-hooks/post-commit`, `tools/dup-check/` | After each commit, prints lines elsewhere in the repo like the ones just committed, so a fact stays in one place. Python standard library; embeddings optional (`tools.md` > "Duplicate check"). |
 | `tools/data-guard/` | A Claude Code hook that stops an agent once when a web search, fetch, browser form or network command carries one of your private values (ID numbers, bank details, address), quoting when that value may go out. Off until you write its list (`tools.md` > "Data guard"). |
+| `tools/mail-guard/` | For the mail desk: a model with no tools judges each new mail first, so the desk gets only a summary of a known sender's harmless mail, and a Claude Code hook stops agents reading a flagged one. Opt-in with the desk (`agents/mail-desk.md` > "Mail guard"). |
 
 ## Background agents
 - **Morning brief and stop call:** the daily rhythm of the `Chief of Staff` chat - the day's plan in the morning, an honest look back and tomorrow in three lines in the evening.
@@ -31,7 +32,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 - **Weekly strategy review:** did the week move you toward your goals, and what should change in the whole strategy.
 - **Repo cleaner:** once a week, keeps the repo tidy - one fact in one place, no dead links.
 - **Agent-fail bench:** logs the moments an agent got it wrong, to replay them on each new model.
-- **Mail desk:** watches your inbox and tells you what needs you. Opt-in: it reads every mail you get. For whoever dares.
+- **Mail desk:** watches your inbox and tells you what needs you. Opt-in: it reads every mail you get; a recommended mail guard screens each one first. For whoever dares.
 
 They run on [Zucchini](https://zucchini.chat), which keeps agent chats alive on your own always-on machine: chats wake themselves with scheduled messages, react to watches and message each other, and you read and steer them from your phone. Without it, each one runs from cron or launchd with `claude -p`. Details: `agents/CLAUDE.md`.
 

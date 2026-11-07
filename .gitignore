@@ -15,3 +15,6 @@ credentials.txt
 
 # the data guard's list of private values and any renamed or backup copy of it; its markers sit in tmp/
 tools/data-guard/*private-data*
+
+# the mail guard's verdicts: they hold mail summaries (outside tmp/: a cleaned tmp/ would leave the hook inert)
+tools/mail-guard/verdicts.jsonl
