@@ -26,6 +26,7 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 - `people.md`: everyone they named.
 - Times: set the morning brief and stop call times in `agents/chief-of-staff.md` and `agents/CLAUDE.md` from their ordinary day.
 - Calendar: if a calendar command already works, write `tools/calendar-today` (executable, prints today's and tomorrow's events one per line) and run `python3 tools/overview.py` to check it.
+- Duplicate check: run `git config core.hooksPath tools/git-hooks`; after each commit it prints lines elsewhere in the repo like the ones just committed. On by default: it is cheap and only prints. Tell the owner it is on; turning it off and the optional embeddings: `tools.md` > "Duplicate check".
 - Delete the "Not set up yet" line, commit by explicit path, push.
 
 ## Shared browser (optional)

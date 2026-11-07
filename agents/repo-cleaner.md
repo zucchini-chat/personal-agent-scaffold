@@ -12,7 +12,8 @@ Question: is anything in this repo worth changing, simplifying, de-duplicating o
 7. The commits and `repo-reviews/<date>.md` are the report. `SendMessage` to `Chief of Staff` only for a fact or decision only the owner has; never block on it.
 
 ## Criteria
-- One fact in one place; a second copy becomes a pointer.
+- One fact in one place; a second copy becomes a pointer. `python3 tools/dup-check/search.py "<text>"` (or `<file.md>:<line>`) finds the copies of a line.
+- Read `bench/dup-check-fails.md`; when it argues for the optional embeddings (`tools.md` > "Duplicate check"), tell the owner via `Chief of Staff`: switching them on is their call.
 - **Every line of the root `CLAUDE.md` earns its place on most tasks**: it loads into every session and subagent. A line only some tasks need moves to the file those tasks read, behind a pointer. A line that lags behind its topic file (a roads list naming a dropped road), names a tool or process that no longer exists, or repeats what both `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` already say is rewritten or dropped. Same test for each topic `CLAUDE.md`.
 - Flat folders with dozens of dated one-off files: group by kind when it cuts lookup time.
 - Tracked tools living in `tmp/` (agent scratch) belong in `tools/`.

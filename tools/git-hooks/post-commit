@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+"""post-commit (git config core.hooksPath tools/git-hooks): for each sentence the commit added to a .md file - every
+sentence of a new line, only the sentences holding new words of an edited line - the most similar line in any other
+file; prints up to 5 of them, best first. Only prints: silent on errors, gives up after 6 s, always exits 0.
+`post-commit <commit>` replays an older commit."""
+import ast, contextlib, difflib, os, signal, sys
+
+MAX_QUERIES, MAX_HITS = 40, 5
+MSG = ("Possible duplicates of the facts you just committed. If a hit states the same fact, fix it now: one place, "
+       "a link in the other.\npython3 tools/dup-check/search.py \"<text>\" shows the top 20 for a sentence.")
+
+
+def hunks(commit):
+    """(file, removed lines, added lines) per hunk of the commit's .md diff; nothing for the root commit."""
+    diff = git("diff", "--unified=0", "--no-color", "--no-ext-diff", "--no-textconv", "--src-prefix=a/",
+               "--dst-prefix=b/", f"{commit}~1", commit, "--", "*.md")
+    f, old, new, header = None, [], [], True
+    for l in (diff.stdout.split("\n") if diff.returncode == 0 else []) + ["diff --git end"]:
+        if l.startswith(("diff --git", "@@")):
+            if f and new:
+                yield f, old, new
+            old, new, header = [], [], l.startswith("diff --git")
+            if header:
+                f = None
+        elif header and l.startswith("+++ "):
+            f = l[4:].rstrip("\t")  # git adds a tab after a name with a space
+            if f.startswith('"'):  # a name with ", \ or a control char is C-quoted even with core.quotePath=false
+                f = ast.literal_eval(f)
+            f = f[2:] if f.startswith("b/") else None
+        elif not header and l.startswith("-"):
+            old.append(l[1:])
+        elif not header and l.startswith("+"):
+            new.append(l[1:])
+
+
+def changed(old, line):
+    """The sentences of `line` holding words inserted or replaced against the most similar line of `old` (word-level
+    diff): all of them for a new line, none when the edit only deleted."""
+    sm = difflib.SequenceMatcher(None, autojunk=False)
+    sm.set_seq2(words(line))  # word tokens, so "bedrooms" and "bedrooms." match
+
+    def ratio(o):
+        sm.set_seq1(o)
+        return sm.quick_ratio()
+
+    sm.set_seq1(max(map(words, old), key=ratio, default=[]))
+    spans = [(j1, j2) for op, _, _, j1, j2 in sm.get_opcodes() if op in ("insert", "replace")]
+    i = 0
+    for s in sentences(line):  # sentences() keeps the word sequence, so word indices map onto sentences
+        n = len(words(s))
+        if any(max(i, j1) < min(i + n, j2) for j1, j2 in spans):
+            yield s
+        i += n
+
+
+def main():
+    commit = sys.argv[1] if len(sys.argv) > 1 else "HEAD"
+    qs = []
+    for f, old, new in hunks(commit):
+        for l in new if not f.startswith(EXCLUDE) else []:
+            if is_line(l) and len(qs) < MAX_QUERIES:
+                qs += [(f, s) for s in changed(old, l) if is_line(s) and (f, s) not in qs]
+    qs = qs[:MAX_QUERIES]
+    if not qs:
+        return
+    results, _ = query([s for _, s in qs], 1, files=[f for f, _ in qs])
+    best = sorted((r["hits"][0] for r in results if r["hits"]), key=lambda h: -h[2])  # stable: ties keep diff order
+    shown = {}
+    for h in best:
+        shown.setdefault((h[0], h[1]), h)
+    if shown:
+        print(MSG)
+        for f, n, _, sentence in list(shown.values())[:MAX_HITS]:
+            print(f"- {f}:{n} {sentence.strip()[:200]}")
+
+
+signal.signal(signal.SIGALRM, lambda *_: os._exit(0))
+signal.alarm(6)
+with contextlib.suppress(Exception):
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "dup-check"))
+    from dupcheck import EXCLUDE, git, is_line, query, sentences, words
+    main()

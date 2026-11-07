@@ -4,6 +4,8 @@ Your own benchmark of agent behaviour: moments an agent did something you did no
 
 Nothing runs in the background. Switch it on by setting its row in `agents/CLAUDE.md` to `on`; from then on, when the owner says an agent got something wrong and asks to log it, any chat does so as below.
 
+Misses and noise of the duplicate check (`tools.md` > "Duplicate check") go to `dup-check-fails.md` whether or not the bench is on, one line each, not into `fails.json`: they are a tool's misses, not a model's, and there is nothing to replay.
+
 ## Logging a fail
 1. Find the session transcript (Claude Code: `~/.claude/projects/<repo-path-with-dashes>/<session-id>.jsonl`) and the `uuid` of the user message that started the bad turn.
 2. Run `tools/bench-snapshot.sh <id> <repo-path> <session.jsonl> <uuid>`: it tags the repo `fail/<id>` at the last commit before that message (and pushes the tag), and saves the session up to it as `tmp/bench-sessions/<id>.jsonl.gz` - local, never committed: sessions can be tens of MB and hold everything said in them.

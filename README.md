@@ -21,6 +21,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `agents/` | Background agents, one playbook each, all off until you switch one on. |
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |
 | `tools/overview.py` | Runs at every Claude Code session start: your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
+| `tools/git-hooks/post-commit`, `tools/dup-check/` | After each commit, prints lines elsewhere in the repo like the ones just committed, so a fact stays in one place. Python standard library; embeddings optional (`tools.md` > "Duplicate check"). |
 
 ## Background agents
 - **Morning brief and stop call:** the daily rhythm of the `Chief of Staff` chat - the day's plan in the morning, an honest look back and tomorrow in three lines in the evening.
