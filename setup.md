@@ -35,6 +35,12 @@ One always-on Chrome with its own profile that every agent drives: [shared-chrom
 2. Keep Chrome running: on macOS `npx -y github:zucchini-chat/shared-chrome-mcp install` (a launchd agent); elsewhere run `npx -y github:zucchini-chat/shared-chrome-mcp start` from the init system. Check with `npx -y github:zucchini-chat/shared-chrome-mcp status`. The new tools show up at the next session start.
 3. Ask the owner to log in, in that Chrome's window, to the sites they want agents to use (mail, calendar, shops, work tools). Say plainly that this only saves time: agents can log in by themselves later in this profile, and every login made there stays for all agents.
 
+## Data guard (optional)
+A hook that stops an agent once when an outgoing call (a web search, a page fetch, a browser form, a network command) carries one of the owner's private values, and tells it when that value may go out; repeating the very same call goes through. A speed bump that makes the agent think again, not a wall against a determined attacker. Offer the step; skip it if they decline.
+1. Ask which values count: ID and passport numbers, bank details, home address, phone, health details - their call. For each, ask when it may go out (for job applications only, on the bank's own site only...), or keep the default: only when they asked for it in their own message.
+2. Write them to `tools/data-guard/private-data.txt`, one `<value> | <when it may go out>` per line (format and tips: `tools.md` > "Data guard"). Never commit it (git ignores it): check that `git status` does not list it.
+3. Tell them it is on in Claude Code (Codex does not run it); details and how to turn it off: `tools.md` > "Data guard".
+
 ## zsh globs (optional)
 Only if the owner's shell is zsh (`echo $SHELL`). Agents write unquoted globs the bash way (`grep --include=*.md`, a `?` in a URL, `[*]`), and zsh's default `nomatch` aborts the whole command with "no matches found" ("bad pattern" or "= not found" for a stray `[` or `==`). Offer to append `setopt no_nomatch no_bad_pattern no_equals` to `${ZDOTDIR:-$HOME}/.zshenv` (unless already there), so such words stay as typed, as in bash. `.zshenv` because it is the one file every zsh reads, including the non-interactive ones agents run. Check: `zsh -c setopt` and `zsh -lc setopt` both list `nobadpattern`, `noequals` and `nonomatch`. It edits a file outside this repo and changes their own terminal too, so ask first; skip it if they decline.
 

@@ -22,6 +22,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |
 | `tools/overview.py` | Runs at every Claude Code session start: your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
 | `tools/git-hooks/post-commit`, `tools/dup-check/` | After each commit, prints lines elsewhere in the repo like the ones just committed, so a fact stays in one place. Python standard library; embeddings optional (`tools.md` > "Duplicate check"). |
+| `tools/data-guard/` | A Claude Code hook that stops an agent once when a web search, fetch, browser form or network command carries one of your private values (ID numbers, bank details, address), quoting when that value may go out. Off until you write its list (`tools.md` > "Data guard"). |
 
 ## Background agents
 - **Morning brief and stop call:** the daily rhythm of the `Chief of Staff` chat - the day's plan in the morning, an honest look back and tomorrow in three lines in the evening.

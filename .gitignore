@@ -8,7 +8,10 @@ tmp/
 # the shared browser's output (snapshots, console logs)
 .playwright-mcp/
 
-# secrets and local settings (.claude itself is tracked: it holds the SessionStart hook)
+# secrets and local settings (.claude itself is tracked: it holds the hooks)
 credentials.txt
 !.claude
 .claude/settings.local.json
+
+# the data guard's list of private values and any renamed or backup copy of it; its markers sit in tmp/
+tools/data-guard/*private-data*
