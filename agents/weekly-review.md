@@ -29,13 +29,11 @@ Verdict in one line (on track / drifting / off track) > 3-5 supported numbers > 
 One line per review, newest first: date, verdict, link to `weekly-reviews/<date>.md`.
 
 ## Schedule
-At the start of every run, `"$ZUCCHINI_SPAWNER_BIN" scheduled-messages list`; if no next review exists, `"$ZUCCHINI_SPAWNER_BIN" scheduled-messages create --body "Weekly strategy review: read agents/weekly-review.md and follow it, including scheduling the next run." --at <next Wednesday at 02:00>` (naive local datetime).
+At the start of every run, check the chat's scheduled messages; if no next review exists, schedule one for next Wednesday at 02:00 with the body `Weekly strategy review: read agents/weekly-review.md and follow it, including scheduling the next run.`.
 
 ## Switch on
 New Zucchini chat in this repo, titled exactly `weekly review`; paste:
 ```
-You run the weekly strategy review. Read CLAUDE.md and agents/weekly-review.md, then run "$ZUCCHINI_SPAWNER_BIN" scheduled-messages list and schedule the next review if it is missing. The first review happens when that message fires. This is a background chat I never read: the verdict and anything for me go to Chief of Staff via SendMessage.
+You run the weekly strategy review. Read CLAUDE.md and agents/weekly-review.md, then check your scheduled messages and schedule the next review if it is missing. The first review happens when that message fires. This is a background chat I never read: the verdict and anything for me go to Chief of Staff via SendMessage.
 ```
 Then set its row in `agents/CLAUDE.md` to `on`.
-
-Without Zucchini: cron `0 2 * * 3` runs `claude -p "Weekly strategy review: read agents/weekly-review.md and follow it; skip scheduling."`.

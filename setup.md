@@ -4,14 +4,15 @@ Run this when `CLAUDE.md` still starts with the "Not set up yet" line. Goal: eve
 
 ## Before the questions
 1. Say what is coming in two lines: about 15 minutes of questions, one at a time; any can be skipped and filled in later.
-2. Private remote. This clone still points at the public scaffold, and everything the owner says will land in commits. Ask for an empty **private** repo of theirs (GitHub, GitLab, any git host), then, before switching, write `git remote get-url origin` and `git rev-parse HEAD` into `agents/repo-cleaner.md` > "Scaffold updates" (Source and Last ported), and run `git remote set-url origin <url> && git push -u origin master`. Until they have one, commit locally and skip the push.
+2. Duplicate check: run `git config core.hooksPath tools/git-hooks`; after each commit it prints lines elsewhere in the repo like the ones just committed. On by default: it is cheap and only prints. Tell the owner it is on; turning it off and the optional embeddings: `tools.md` > "Duplicate check".
+3. Private remote. This clone still points at the public scaffold, and everything the owner says will land in commits. Ask for an empty **private** repo of theirs (GitHub, GitLab, any git host), then, before switching, write `git remote get-url origin` and `git rev-parse HEAD` into `agents/repo-cleaner.md` > "Scaffold updates" (Source and Last ported), and run `git remote set-url origin <url> && git push -u origin master`. Until they have one, commit locally and skip the push.
 
 ## The questions
 One at a time, in this order. A short follow-up when an answer is vague; never ask what a later question or a search will answer anyway.
-1. Name, how to address them ("you", a name), and the language of replies.
+1. Name, how to address them ("you", a name), pronouns, and the language of replies.
 2. Goals, in priority order: what they want in the next year or two, most important first. Push for 3-5 concrete ones and for which wins when two conflict.
 3. Roads: the paths they have already chosen toward those goals. Everything else is off-limits for nudges.
-4. Who they are: age, work, where they live and since when, where before, who lives with them.
+4. Who they are: age, work, where they live and since when, where before, who lives with them, what they do off the clock.
 5. Home: address or neighbourhood. Look up the coordinates yourself and confirm them; that point is the "near me" centre.
 6. Ordinary weekday: wake, work hours, meals, family time, the hard stop. The stop time drives the "past <STOP_TIME> - stop" rule and the stop call.
 7. Standing decisions: things already settled that agents must not re-propose.
@@ -26,7 +27,6 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 - `people.md`: everyone they named.
 - Times: set the morning brief and stop call times in `agents/chief-of-staff.md` and `agents/CLAUDE.md` from their ordinary day.
 - Calendar: if a calendar command already works, write `tools/calendar-today` (executable, prints today's and tomorrow's events one per line) and run `python3 tools/overview.py` to check it.
-- Duplicate check: run `git config core.hooksPath tools/git-hooks`; after each commit it prints lines elsewhere in the repo like the ones just committed. On by default: it is cheap and only prints. Tell the owner it is on; turning it off and the optional embeddings: `tools.md` > "Duplicate check".
 - Delete the "Not set up yet" line, commit by explicit path, push.
 
 ## Shared browser (optional)
@@ -37,8 +37,8 @@ One always-on Chrome with its own profile that every agent drives: [shared-chrom
 
 ## Data guard (optional)
 A hook that stops an agent once when an outgoing call (a web search, a page fetch, a browser form, a network command) carries one of the owner's private values, and tells it when that value may go out; repeating the very same call goes through. A speed bump that makes the agent think again, not a wall against a determined attacker. Offer the step; skip it if they decline.
-1. Ask which values count: ID and passport numbers, bank details, home address, phone, health details - their call. For each, ask when it may go out (for job applications only, on the bank's own site only...), or keep the default: only when they asked for it in their own message.
-2. Write them to `tools/data-guard/private-data.txt`, one `<value> | <when it may go out>` per line (format and tips: `tools.md` > "Data guard"). Never commit it (git ignores it): check that `git status` does not list it.
+1. Ask which values count: ID and passport numbers, bank details, home address, phone, health details - their call. For each, ask when it may go out ("only for job applications", "only on the bank's own site"), or keep the default: only when they asked for it in their own message.
+2. Write them to `tools/data-guard/private-data.txt`, one `<value> | <rule>` per line, the rule in their words (format and tips: `tools.md` > "Data guard"). Never commit it (git ignores it): check that `git status` does not list it.
 3. Tell them it is on in Claude Code (Codex does not run it); details and how to turn it off: `tools.md` > "Data guard".
 
 ## zsh globs (optional)

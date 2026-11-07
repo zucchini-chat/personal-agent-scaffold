@@ -34,7 +34,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 - **Agent-fail bench:** logs the moments an agent got it wrong, to replay them on each new model.
 - **Mail desk:** watches your inbox and tells you what needs you. Opt-in: it reads every mail you get; a recommended mail guard screens each one first. For whoever dares.
 
-They run on [Zucchini](https://zucchini.chat), which keeps agent chats alive on your own always-on machine: chats wake themselves with scheduled messages, react to watches and message each other, and you read and steer them from your phone. Without it, each one runs from cron or launchd with `claude -p`. Details: `agents/CLAUDE.md`.
+They run on [Zucchini](https://zucchini.chat), which keeps agent chats alive on your own always-on machine: chats wake themselves with scheduled messages, react to watches and message each other, and you read and steer them from your phone. Details: `agents/CLAUDE.md`.
 
 ## Keep it private
 Everything you tell the agent lands in this repo. Push it only to a private remote; setup points `origin` there. Updates from this scaffold arrive through the repo cleaner, which brings each new change over by meaning (`agents/repo-cleaner.md` > "Scaffold updates"). Secrets go in `credentials.txt`, which git ignores.

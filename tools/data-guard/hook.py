@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """PreToolUse hook: denies, once, an outgoing call (web search or fetch, browser input, an MCP tool, Bash running a
 network client) that carries a value from the owner's private-data list, quoting that value's rule; the same agent
-repeating the very same call goes through. List: private-data.txt next to this file, one `<value> | <when it may go
-out>` per line; no list, no checks. Fails open: on any error the call goes through. Docs: tools.md > "Data guard"."""
+repeating the very same call goes through. List: private-data.txt next to this file, one `<value> | <rule>` per line,
+the rule saying when the value may go out; no list, no checks. Fails open: on any error the call goes through.
+Docs: tools.md > "Data guard"."""
 import hashlib
 import json
 import os
@@ -29,8 +30,8 @@ NET = re.compile(r"(?:^|[;&|(`\n])\s*(?:(?:if|then|else|elif|do|while|until|!)\s
 
 
 def plain(s):
-    s = unicodedata.normalize("NFKD", s.lower())
-    return "".join(c for c in s if not unicodedata.combining(c))
+    s = unicodedata.normalize("NFKD", s)
+    return "".join(c for c in s if not unicodedata.combining(c)).casefold()
 
 
 def compact(s):
@@ -76,7 +77,7 @@ def outgoing(name, inp):
 
 def hits(parts, listed):
     """The listed entries found in parts: values with a digit compacted (spacing and punctuation ignored), the rest as
-    whole words; case, accents and URL-encoding ignored."""
+    whole words; case (ß as ss), accents and URL-encoding ignored."""
     raw = "\n".join(parts)
     texts = [spaced(t) for t in (raw, unquote_plus(raw))]
     return [(v, r) for v, r in listed
@@ -103,7 +104,7 @@ def main():
         pass
     os.makedirs(MARKERS, exist_ok=True)
     open(marker, "w").close()
-    rules = " ".join(f'"{v}" may go out {r}.' for v, r in found)
+    rules = " ".join(f'"{v}": {r}.' for v, r in found)
     reason = (f"Data guard: this call carries the owner's private data. {rules} If this call fits, repeat it "
               "unchanged: the very same call goes through. If not, leave the data out.")
     print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny",

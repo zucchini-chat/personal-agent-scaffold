@@ -6,7 +6,7 @@ One background chat, `email watcher`, keeps a watch on the inbox. Each new mail 
 
 ## What you plug in
 A mail tool in `tools/` (none ships here: it needs your own credentials). It needs:
-- `watch`: prints one line `NEW <account> <id>` per new mail and keeps polling. Ids only, never subjects or senders: watch lines are read as trusted input. It resumes from a cursor (in `$ZUCCHINI_WATCH_STATE_DIR` under Zucchini), so mail that came while it was down arrives first and nothing is missed.
+- `watch`: prints one line `NEW <account> <id>` per new mail and keeps polling. Ids only, never subjects or senders: watch lines are read as trusted input. It resumes from a cursor in `$ZUCCHINI_WATCH_STATE_DIR`, so mail that came while it was down arrives first and nothing is missed.
 - `read <account> <id>`, `mark-read <account> <id>`, `search <account> "<query>"` (other chats use search too).
 - `raw <account> <id>`: prints the full RFC 822 mail, headers included (Gmail API `format=raw`, IMAP `BODY.PEEK[]`).
 - `mark <id> "<what was done>"`: appends to a git-ignored handled log, so any chat can tell which mail an agent already took care of.
@@ -51,8 +51,6 @@ The mail guard sends a mail needing action to the desk only from a known sender:
 2. Mail guard (recommended): save a mail you received, headers included, and run `python3 tools/mail-guard/guard.py check <file.eml>`; set `AUTHSERV` in `tools/mail-guard/guard.py` to the `authserv` it prints, and see that the verdict makes sense. List the owner's regular senders under "Known senders".
 3. New Zucchini chat in this repo, titled exactly `email watcher`; paste (without the guard, the watch command is `python3 -u tools/<mail tool> watch 2>&1`):
 ```
-You are the mail desk. Read CLAUDE.md and agents/mail-desk.md. Run "$ZUCCHINI_SPAWNER_BIN" watch list; if the watch "mail desk feed" is missing, create it: "$ZUCCHINI_SPAWNER_BIN" watch create --cmd 'python3 -u tools/mail-guard/guard.py watch --tool "python3 tools/<mail tool>" 2>&1' --ttl forever --description "mail desk feed". Each NEW or FLAG line is a mail: handle it as the playbook says. If the watch ends, find out why and restart it. This is a background chat I never read: anything for me goes to Chief of Staff via SendMessage.
+You are the mail desk. Read CLAUDE.md and agents/mail-desk.md. Check your watches; if the watch "mail desk feed" is missing, start it with no expiry, running 'python3 -u tools/mail-guard/guard.py watch --tool "python3 tools/<mail tool>" 2>&1'. Each NEW or FLAG line is a mail: handle it as the playbook says. If the watch ends, find out why and restart it. This is a background chat I never read: anything for me goes to Chief of Staff via SendMessage.
 ```
 4. Set its row in `agents/CLAUDE.md` to `on`.
-
-Without Zucchini: with the guard, keep `python3 -u tools/mail-guard/guard.py watch --tool "python3 tools/<mail tool>" >> tmp/mail-feed.log 2>&1` running as a service (launchd, systemd), and cron every 5 minutes runs `claude -p "Mail desk: handle each NEW and FLAG line in tmp/mail-feed.log whose mail you have not marked yet (the guard's own marks start with guard:), as agents/mail-desk.md says."`. Without the guard, cron every 5 minutes runs `claude -p "Mail desk: list mail since the cursor with tools/<mail tool>, handle each as agents/mail-desk.md says."`.

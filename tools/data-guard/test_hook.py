@@ -16,6 +16,9 @@ Jane Example | for job applications only
 +00 000 000 000 | for job applications only.
 XX00 TEST 0000 1234
 José Exemplo | for the bank's own site only
+Karl-Example-Straße 9 | only when I ask
+Anna Weiss
+Ἡρῴδης
 
 # Secret Word | never
 |
@@ -76,10 +79,10 @@ class HookTest(unittest.TestCase):
 
     def test_reason_quotes_the_rule(self):
         r = self.reason("WebSearch", {"query": "Jane Example xx00test00001234"})
-        self.assertIn('"Jane Example" may go out for job applications only.', r)
-        self.assertIn('"XX00 TEST 0000 1234" may go out only when the owner asked for it in their own message', r)
+        self.assertIn('"Jane Example": for job applications only.', r)
+        self.assertIn('"XX00 TEST 0000 1234": only when the owner asked for it in their own message', r)
         self.assertIn("repeat it unchanged", r)
-        self.assertIn('"+00 000 000 000" may go out for job applications only. ', self.reason("Bash", CURL))
+        self.assertIn('"+00 000 000 000": for job applications only. ', self.reason("Bash", CURL))
 
     def test_value_with_digits_ignores_spacing_and_case(self):
         self.assertDenied("Bash", {"command": "curl https://x.test -d 'tel=(+00) 000.000.000'"})
@@ -95,6 +98,13 @@ class HookTest(unittest.TestCase):
         self.assertDenied("WebSearch", {"query": "jose exemplo address"})
         self.assertDenied("WebSearch", {"query": "jane-example"})
         self.assertAllowed("WebSearch", {"query": "Janet Examples"})
+
+    def test_sharp_s_counts_as_ss(self):
+        self.assertDenied("WebSearch", {"query": "Karl-Example-Strasse 9"})
+        self.assertDenied("WebSearch", {"query": "anna weiß"})
+
+    def test_iota_subscript_counts_as_accent(self):
+        self.assertDenied("WebSearch", {"query": "Ηρωδης"})
 
     def test_no_match_glued_from_raw_and_decoded_text(self):
         self.assertAllowed("WebSearch", {"query": "Example Jane"})

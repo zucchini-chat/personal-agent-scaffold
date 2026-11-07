@@ -36,13 +36,11 @@ The repo started as a copy of a public scaffold that keeps improving. It is not 
 One line per item: date added, proposal, what would confirm it.
 
 ## Schedule
-At the start of every run, `"$ZUCCHINI_SPAWNER_BIN" scheduled-messages list`; if no next run exists, `"$ZUCCHINI_SPAWNER_BIN" scheduled-messages create --body "Repo cleaner: read agents/repo-cleaner.md and follow it, including scheduling the next run." --at <next Saturday at 02:00>` (naive local datetime).
+At the start of every run, check the chat's scheduled messages; if no next run exists, schedule one for next Saturday at 02:00 with the body `Repo cleaner: read agents/repo-cleaner.md and follow it, including scheduling the next run.`.
 
 ## Switch on
 New Zucchini chat in this repo, titled exactly `repo cleaner`; paste:
 ```
-You are the weekly repo cleaner. Read CLAUDE.md and agents/repo-cleaner.md, then run "$ZUCCHINI_SPAWNER_BIN" scheduled-messages list and schedule the next run if it is missing. The first run happens when that message fires. This is a background chat I never read: anything only I can answer goes to Chief of Staff via SendMessage.
+You are the weekly repo cleaner. Read CLAUDE.md and agents/repo-cleaner.md, then check your scheduled messages and schedule the next run if it is missing. The first run happens when that message fires. This is a background chat I never read: anything only I can answer goes to Chief of Staff via SendMessage.
 ```
 Then set its row in `agents/CLAUDE.md` to `on`.
-
-Without Zucchini: cron `0 2 * * 6` runs `claude -p "Repo cleaner: read agents/repo-cleaner.md and follow it; skip scheduling."`.

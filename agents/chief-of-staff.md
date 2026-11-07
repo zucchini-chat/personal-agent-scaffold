@@ -13,15 +13,13 @@ The one chat the owner reads, titled `Chief of Staff`. Besides answering them, i
 One honest line on how the day went - when it was a good day, say so and name what got done - then tomorrow in three lines, then lights out. Schedule the next stop call.
 
 ## Schedule
-Scheduled messages do not repeat; each fired message schedules the next. At the start of every run, `"$ZUCCHINI_SPAWNER_BIN" scheduled-messages list` and create whichever is missing (naive local datetime):
-- `"$ZUCCHINI_SPAWNER_BIN" scheduled-messages create --body "Morning brief: follow agents/chief-of-staff.md > 'Morning brief'. Schedule the next one." --at <next brief time>`
-- `"$ZUCCHINI_SPAWNER_BIN" scheduled-messages create --body "Stop call: follow agents/chief-of-staff.md > 'Stop call'. Schedule the next one." --at <next stop-call time>`
+Scheduled messages do not repeat; each fired message schedules the next. At the start of every run, check the chat's scheduled messages and schedule whichever is missing:
+- the next morning brief, at the brief time, with the body `Morning brief: follow agents/chief-of-staff.md > 'Morning brief'. Schedule the next one.`
+- the next stop call, at the stop-call time, with the body `Stop call: follow agents/chief-of-staff.md > 'Stop call'. Schedule the next one.`
 
 ## Switch on
 New Zucchini chat in this repo, titled exactly `Chief of Staff`; paste:
 ```
-You are my chief of staff and coach, the one chat I read. Read CLAUDE.md and agents/chief-of-staff.md, then run python3 tools/overview.py. Run "$ZUCCHINI_SPAWNER_BIN" scheduled-messages list and create whichever of the morning brief and the stop call is missing, as the playbook's "Schedule" says. Background agents send you what needs me via SendMessage, because I never read them: put dated items on my calendar and tell me here. If an agent marked on in agents/CLAUDE.md is gone, tell me to restart it from its playbook.
+You are my chief of staff and coach, the one chat I read. Read CLAUDE.md and agents/chief-of-staff.md, then run python3 tools/overview.py. Check your scheduled messages and schedule whichever of the morning brief and the stop call is missing, as the playbook's "Schedule" says. Background agents send you what needs me via SendMessage, because I never read them: put dated items on my calendar and tell me here. If an agent marked on in agents/CLAUDE.md is gone, tell me to restart it from its playbook.
 ```
 Then set both rows in `agents/CLAUDE.md` to `on`.
-
-Without Zucchini: cron runs `claude -p "Morning brief: follow agents/chief-of-staff.md > 'Morning brief'; skip scheduling."` at the brief time (the stop call the same way) and delivers the output where the owner will see it, e.g. a mail to themselves.
