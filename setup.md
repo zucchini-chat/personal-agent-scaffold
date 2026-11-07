@@ -34,5 +34,8 @@ One always-on Chrome with its own profile that every agent drives: [shared-chrom
 2. Keep Chrome running: on macOS `npx -y github:zucchini-chat/shared-chrome-mcp install` (a launchd agent); elsewhere run `npx -y github:zucchini-chat/shared-chrome-mcp start` from the init system. Check with `npx -y github:zucchini-chat/shared-chrome-mcp status`. The new tools show up at the next session start.
 3. Ask the owner to log in, in that Chrome's window, to the sites they want agents to use (mail, calendar, shops, work tools). Say plainly that this only saves time: agents can log in by themselves later in this profile, and every login made there stays for all agents.
 
+## zsh globs (optional)
+Only if the owner's shell is zsh (`echo $SHELL`). Agents write unquoted globs the bash way (`grep --include=*.md`, a `?` in a URL, `[*]`), and zsh's default `nomatch` aborts the whole command with "no matches found" ("bad pattern" or "= not found" for a stray `[` or `==`). Offer to append `setopt no_nomatch no_bad_pattern no_equals` to `${ZDOTDIR:-$HOME}/.zshenv` (unless already there), so such words stay as typed, as in bash. `.zshenv` because it is the one file every zsh reads, including the non-interactive ones agents run. Check: `zsh -c setopt` and `zsh -lc setopt` both list `nobadpattern`, `noequals` and `nonomatch`. It edits a file outside this repo and changes their own terminal too, so ask first; skip it if they decline.
+
 ## The end
-Tell them in a few lines: what was written, which placeholders remain, and the next step - switch on the Chief of Staff rhythm (`agents/chief-of-staff.md` > "Switch on"), then one background agent at a time from `agents/CLAUDE.md`.
+Tell them in a few lines: what was written and set up, which placeholders remain, and the next step - switch on the Chief of Staff rhythm (`agents/chief-of-staff.md` > "Switch on"), then one background agent at a time from `agents/CLAUDE.md`.

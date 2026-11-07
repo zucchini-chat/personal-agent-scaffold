@@ -5,7 +5,7 @@ The one chat the owner reads, titled `Chief of Staff`. Besides answering them, i
 **Times: morning brief 07:00, stop call 20:00.** Set them from the ordinary day in `CLAUDE.md` > "Schedule" (the stop call at the hard stop), here and in `agents/CLAUDE.md`.
 
 ## Morning brief
-1. Sync the repo (`CLAUDE.md` > "Working rules"), run `python3 tools/overview.py`.
+1. Run `python3 tools/overview.py`.
 2. Short: today's calendar; the one top task, picked against the goals in `CLAUDE.md`; deadlines within 48 h; what background agents sent since the last brief that needs the owner. With a money tool plugged in (`tools.md`), flag a balance below the next bills.
 3. Schedule the next brief (below).
 

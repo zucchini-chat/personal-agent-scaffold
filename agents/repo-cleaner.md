@@ -3,7 +3,7 @@
 Question: is anything in this repo worth changing, simplifying, de-duplicating or rearranging, so agents and the owner find each fact faster and in one place. Autonomous. Runs in the background chat `repo cleaner`.
 
 ## Steps
-1. Schedule check (below). Sync the repo. Judge last week's changes first: `git log --since="7 days ago" --grep="^Repo cleaner"` and the commits after them. A change that other sessions reverted, re-created in the old place, or kept tripping over is a failed change - fix or undo it before anything new.
+1. Schedule check (below). Judge last week's changes first: `git log --since="7 days ago" --grep="^Repo cleaner"` and the commits after them. A change that other sessions reverted, re-created in the old place, or kept tripping over is a failed change - fix or undo it before anything new.
 2. Scaffold updates (below).
 3. Re-check each item in "Deferred" below against the week's commits: act if the week confirmed it, drop it if nothing touched it.
 4. One read-only audit subagent: a full repo sweep against the criteria below, ranked proposals to `repo-reviews/<date>.md` (committed with the review), each with files, the change, why, risk and confidence.
@@ -12,7 +12,8 @@ Question: is anything in this repo worth changing, simplifying, de-duplicating o
 7. The commits and `repo-reviews/<date>.md` are the report. `SendMessage` to `Chief of Staff` only for a fact or decision only the owner has; never block on it.
 
 ## Criteria
-- One fact in one place; a second copy becomes a pointer. `CLAUDE.md` files stay lean, detail in topic files.
+- One fact in one place; a second copy becomes a pointer.
+- **Every line of the root `CLAUDE.md` earns its place on most tasks**: it loads into every session and subagent. A line only some tasks need moves to the file those tasks read, behind a pointer. A line that lags behind its topic file (a roads list naming a dropped road), names a tool or process that no longer exists, or repeats what both `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` already say is rewritten or dropped. Same test for each topic `CLAUDE.md`.
 - Flat folders with dozens of dated one-off files: group by kind when it cuts lookup time.
 - Tracked tools living in `tmp/` (agent scratch) belong in `tools/`.
 - Stale names, dead cross-links, files no one references and nothing in the last 30 days touched.
@@ -22,7 +23,7 @@ Question: is anything in this repo worth changing, simplifying, de-duplicating o
 - Do not change the meaning of any rule or fact; only where it lives and how it reads.
 - Do not rewrite text in files the owner edits by hand; moving them is fine only with every link repointed.
 - Paths hard-coded in scripts, hooks (`.claude/settings.json`), scheduled-message bodies, watch commands and `agents/CLAUDE.md` count as links.
-- Other sessions work here in parallel: stage by explicit path, sync before each commit, small commits.
+- Small commits.
 - When unsure, defer a week rather than change.
 
 ## Scaffold updates

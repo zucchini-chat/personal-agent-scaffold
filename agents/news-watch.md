@@ -3,7 +3,7 @@
 A background chat, `news reader`, reads the news once a day and sends only what changes something for the owner to `Chief of Staff` via `SendMessage`. Expect one or two such sends a week, plus the optional daily item below.
 
 ## Daily run
-1. Schedule check (below). Sync the repo, then `python3 tools/news/fetch.py > /tmp/news-today.txt` - new items from the last 3 days across the feeds in the script, deduped against `tools/news/seen.txt`. The feeds are the watch list below turned into queries; keep the two in step.
+1. Schedule check (below). Run `python3 tools/news/fetch.py > /tmp/news-today.txt` - new items from the last 3 days across the feeds in the script, deduped against `tools/news/seen.txt`. The feeds are the watch list below turned into queries; keep the two in step.
 2. Skim the titles against the watch list. Open only the candidates and confirm the fact at a primary source where one exists (the official gazette, the regulator, the company's own release).
 3. Send when it passes the bar. One message per item: first line what happened, then why it matters for the owner, what to do (or "nothing, FYI"), the source link.
 4. Append a line to "Sent" below, commit it with `tools/news/seen.txt` and push.

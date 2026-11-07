@@ -3,7 +3,7 @@
 Question: is everything in the owner's calendar for the next 7 days prioritised clearly and in line with the goals in `CLAUDE.md`, and should anything take more or less time. Runs in the background chat `calendar audit`. Needs a calendar the agent can read (`tools.md` > "Calendar").
 
 ## Steps
-1. Schedule check (below). Sync the repo, then read the next 7 days of the calendar.
+1. Schedule check (below). Read the next 7 days of the calendar.
 2. Judge them against the goals in `CLAUDE.md` and the ordinary day in `CLAUDE.md` > "Schedule": priorities clear, time per item right, conflicts, gaps, rest missing from the weekend. Blocks the owner asked for themselves stay; don't question them. A commit or message time is not the owner working - agents commit while they sleep.
 3. Anything worth changing goes to `Chief of Staff` via `SendMessage`: the event, the change, why. The audit does not edit the calendar itself. Nothing to change - send nothing.
 
