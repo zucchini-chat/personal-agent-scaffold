@@ -1,6 +1,6 @@
 # About <NAME>
 
-> **Not set up yet:** placeholders in `<angle brackets>` remain. Before anything else, run the setup interview in `setup.md`, then delete this line.
+> **Not set up yet** (setup interview: `setup.md`, next: Before the questions): placeholders in `<angle brackets>` remain. Before anything else, run the interview from the step named here, then delete this line.
 
 Personal context repo: life, work, documents, anything not tied to a code project. Each topic folder has its own `CLAUDE.md`; read it before answering in that area.
 

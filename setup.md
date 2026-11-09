@@ -2,6 +2,8 @@
 
 Run this when `CLAUDE.md` still starts with the "Not set up yet" line. Goal: every `<placeholder>` in `CLAUDE.md` replaced with the owner's own facts, in their words, and the repo moved to a private remote of theirs.
 
+**Save as you go.** A session can end mid-interview (a crash, a compaction, the owner walking off), and nothing said may be lost. Each step below (the steps before the questions, every question, every optional section) ends the same way, before the next one starts: write what you learned where it belongs ("Where answers go"), set `next:` in the "Not set up yet" line to the following step, commit by explicit path and push (locally only until the private remote is set). A session that finds that line starts at the step it names.
+
 ## Before the questions
 1. Say what is coming in two lines: about 15 minutes of questions, one at a time; any can be skipped and filled in later.
 2. Duplicate check: run `git config core.hooksPath tools/git-hooks`; after each commit it prints lines elsewhere in the repo like the ones just committed. On by default: it is cheap and only prints. Tell the owner it is on; turning it off and the optional embeddings: `tools.md` > "Duplicate check".
@@ -21,13 +23,12 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 10. Topic areas: the 3-6 parts of life they want help with (work, health, money, home, kids, travel, food...).
 11. The machine: which one stays on, and whether Zucchini is installed on it.
 
-## Writing it
-- Fill `CLAUDE.md` in place: keep its structure and rules, replace placeholders, set pronouns as they prefer. A skipped answer keeps its placeholder; list those at the end.
-- One folder per topic: `<topic>/CLAUDE.md` with a title, one line on what it covers and a file table (`| File | Covers |`), plus a row in the topic table of `CLAUDE.md`. What they told you about that topic goes in there, not in the root file.
+## Where answers go
+- Fill `CLAUDE.md` in place: keep its structure and rules, replace placeholders, set pronouns as they prefer. A skipped answer keeps its placeholder and is not asked again.
+- One folder per topic: `<topic>/CLAUDE.md` with a title, one line on what it covers and a file table (`| File | Covers |`), plus a row in the topic table of `CLAUDE.md`. What they told you about that topic goes in there, not in the root file; a topic fact said before question 10 gets its folder right away.
 - `people.md`: everyone they named.
 - Times: set the morning brief and stop call times in `agents/chief-of-staff.md` and `agents/CLAUDE.md` from their ordinary day.
 - Calendar: if a calendar command already works, write `tools/calendar-today` (executable, prints today's and tomorrow's events one per line) and run `python3 tools/overview.py` to check it.
-- Delete the "Not set up yet" line, commit by explicit path, push.
 
 ## Shared browser (optional)
 One always-on Chrome with its own profile that every agent drives: [shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp). It is what lets agents do computer work on sites (forms, uploads, accounts). Rules: `tools.md` > "Browser". Needs Google Chrome and Node.js; if either is missing, ask before installing it. Offer the step; skip it if they decline.
@@ -45,4 +46,4 @@ A hook that stops an agent once when an outgoing call (a web search, a page fetc
 Only if the owner's shell is zsh (`echo $SHELL`). Agents write unquoted globs the bash way (`grep --include=*.md`, a `?` in a URL, `[*]`), and zsh's default `nomatch` aborts the whole command with "no matches found" ("bad pattern" or "= not found" for a stray `[` or `==`). Offer to append `setopt no_nomatch no_bad_pattern no_equals` to `${ZDOTDIR:-$HOME}/.zshenv` (unless already there), so such words stay as typed, as in bash. `.zshenv` because it is the one file every zsh reads, including the non-interactive ones agents run. Check: `zsh -c setopt` and `zsh -lc setopt` both list `nobadpattern`, `noequals` and `nonomatch`. It edits a file outside this repo and changes their own terminal too, so ask first; skip it if they decline.
 
 ## The end
-Tell them in a few lines: what was written and set up, which placeholders remain, and the next step - switch on the Chief of Staff rhythm (`agents/chief-of-staff.md` > "Switch on"), then one background agent at a time from `agents/CLAUDE.md`.
+Delete the "Not set up yet" line, commit by explicit path, push. Tell them in a few lines: what was written and set up, which placeholders remain, and the next step - switch on the Chief of Staff rhythm (`agents/chief-of-staff.md` > "Switch on"), then one background agent at a time from `agents/CLAUDE.md`.
