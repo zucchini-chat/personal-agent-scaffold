@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Lines of the repo's markdown most like a text or like one repo line, best first: file:line  score  the line's
-best-matching sentence.
+"""Lines of the repo's markdown most like a text or like one repo line, best first: file:line  BM25 score  the line's
+best-matching sentence. The post-commit hook shows a hit only from its FLOOR score up.
 Usage: search.py "text" [-k 20]      search.py path/to/file.md:LINE [-k 20]   (that line itself is left out)"""
 import argparse, os, re, sys
-from dupcheck import ROOT, query
+from dupcheck import ROOT, search
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 ap.add_argument("target")
@@ -24,8 +24,5 @@ else:
     text, skip = a.target, None
 if not re.search(r"\w", text):
     sys.exit(f"nothing to search for: {text!r}")
-results, mode = query([text], a.k, skip=skip, timeout=10)
-if mode == "bm25-cold":
-    print("(BM25 only: the embedding server is starting, log in tmp/dup-check/server.log; ask again in a minute for BM25 + embeddings)", file=sys.stderr)
-for f, n, score, sentence in results[0]["hits"]:
-    print(f"{f}:{n}  {score:.4f}  {sentence.strip()[:200]}")
+for f, n, score, sentence in search([text], a.k, skip=skip)[0]:
+    print(f"{f}:{n}  {score:5.1f}  {sentence.strip()[:200]}")

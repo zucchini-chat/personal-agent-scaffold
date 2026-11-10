@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """post-commit (git config core.hooksPath tools/git-hooks): for each sentence the commit added to a .md file - every
 sentence of a new line, only the sentences holding new words of an edited line - the most similar line in any other
-file; prints up to 5 of them, best first. Only prints: silent on errors, gives up after 6 s, always exits 0.
+file (BM25); prints those scoring FLOOR or more, best first, at most 5, and nothing when none does. Only prints:
+silent on errors, gives up after 6 s, always exits 0.
 `post-commit <commit>` replays an older commit."""
 import ast, contextlib, difflib, os, signal, sys
 
 MAX_QUERIES, MAX_HITS = 40, 5
+FLOOR = 30  # raw BM25 score; how it was set and when to move it: tools.md > "Duplicate check"
 MSG = ("Possible duplicates of the facts you just committed. If a hit states the same fact, fix it now: one place, "
        "a link in the other.\npython3 tools/dup-check/search.py \"<text>\" shows the top 20 for a sentence.")
 
@@ -63,10 +65,9 @@ def main():
     qs = qs[:MAX_QUERIES]
     if not qs:
         return
-    results, _ = query([s for _, s in qs], 1, files=[f for f, _ in qs])
-    best = sorted((r["hits"][0] for r in results if r["hits"]), key=lambda h: -h[2])  # stable: ties keep diff order
+    results = search([s for _, s in qs], 1, files=[f for f, _ in qs])
     shown = {}
-    for h in best:
+    for h in sorted((r[0] for r in results if r and r[0][2] >= FLOOR), key=lambda h: -h[2]):
         shown.setdefault((h[0], h[1]), h)
     if shown:
         print(MSG)
@@ -78,5 +79,5 @@ signal.signal(signal.SIGALRM, lambda *_: os._exit(0))
 signal.alarm(6)
 with contextlib.suppress(Exception):
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "dup-check"))
-    from dupcheck import EXCLUDE, git, is_line, query, sentences, words
+    from dupcheck import EXCLUDE, git, is_line, search, sentences, words
     main()
