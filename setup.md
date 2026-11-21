@@ -6,7 +6,7 @@ Run this when `CLAUDE.md` still starts with the "Not set up yet" line. Goal: eve
 
 ## Before the questions
 1. Say what is coming in two lines: about 15 minutes of questions, one at a time; any can be skipped and filled in later.
-2. Duplicate check: run `git config core.hooksPath tools/git-hooks`; after each commit it prints lines elsewhere in the repo like the ones just committed. On by default: it is cheap and only prints. Tell the owner it is on; turning it off: `tools.md` > "Duplicate check".
+2. Duplicate check: run `git config core.hooksPath tools/git-hooks`; after each commit it prints lines elsewhere in the repo like the ones just committed. On by default: it is cheap and only prints. Tell the owner it is on; turning it off: `tools.md` > "Duplicate check". The same hooksPath also runs the `.tyaml` type check before each commit, which needs PyYAML: if `python3 -c 'import yaml'` fails, ask the owner before installing it as `tools.md` > "Typed YAML" says.
 3. Private remote. This clone still points at the public scaffold, and everything the owner says will land in commits. Ask for an empty **private** repo of theirs (GitHub, GitLab, any git host), then, before switching, write `git remote get-url origin` and `git rev-parse HEAD` into `agents/repo-cleaner.md` > "Scaffold updates" (Source and Last ported), and run `git remote set-url origin <url> && git push -u origin master`. Until they have one, commit locally and skip the push.
 
 ## The questions

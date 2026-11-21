@@ -9,7 +9,7 @@ It is a plain git repo of markdown files. The agent reads them, keeps them curre
 2. Start `claude` (or `codex`) in that folder and say hi.
 3. The agent sees that `CLAUDE.md` is still a template and runs a setup interview (`setup.md`, about 15 minutes): your goals in priority order, who you are, where home is, how you want to be addressed, the parts of life you want help with. It saves each answer into `CLAUDE.md` as you go (a cut-off interview resumes where it stopped), makes a folder per topic, and moves the repo to a private remote of yours.
 
-There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git, plus an optional shared browser ([shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp): one always-on, logged-in Chrome for all your agents; Chrome and Node.js) that setup can switch on.
+There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git (the `.tyaml` type check also needs PyYAML), plus an optional shared browser ([shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp): one always-on, logged-in Chrome for all your agents; Chrome and Node.js) that setup can switch on.
 
 ## What is inside
 | Path | What |
@@ -22,6 +22,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |
 | `tools/overview.py` | Runs at every Claude Code session start: your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
 | `tools/git-hooks/post-commit`, `tools/dup-check/` | After each commit, prints lines elsewhere in the repo like the ones just committed, so a fact stays in one place. Python standard library (`tools.md` > "Duplicate check"). |
+| `tools/git-hooks/pre-commit`, `tools/tyaml.py` | Before each commit, checks the `.tyaml` files in it against their own types and stops the commit on an error. Needs PyYAML (`tools.md` > "Typed YAML"). |
 | `tools/data-guard/` | A Claude Code hook that stops an agent once when a web search, fetch, browser form or network command carries one of your private values (ID numbers, bank details, address), quoting when that value may go out. Off until you write its list (`tools.md` > "Data guard"). |
 | `tools/mail-guard/` | For the mail desk: a model with no tools judges each new mail first, so the desk gets only a summary of a known sender's harmless mail, and a Claude Code hook stops agents reading a flagged one. Opt-in with the desk (`agents/mail-desk.md` > "Mail guard"). |
 
