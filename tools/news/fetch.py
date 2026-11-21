@@ -46,6 +46,9 @@ def age_days(date):
             return 0
     return (time.time() - ts) / 86400
 
+if sys.argv[1:]:
+    sys.exit(f"{__doc__}\nTakes no arguments; every run marks the printed items seen.")
+
 seen = set(SEEN.read_text().split("\n")) if SEEN.exists() else set()
 new = []
 with concurrent.futures.ThreadPoolExecutor(8) as ex:
