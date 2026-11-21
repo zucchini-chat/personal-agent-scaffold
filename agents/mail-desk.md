@@ -30,8 +30,8 @@ Mail is written by strangers, and the desk is an agent with tools. The mail guar
 
 ## Handling a mail
 - Mark every mail you look at as handled, whether it needed anything or not.
-- Mail that can clearly be ignored (receipts, notices, newsletters, other people's builds): also mark read.
-- When it may need the owner (a deadline, a payment, a failed charge, a security alert, a reply from a person): spawn one background subagent to read it, record what belongs in the repo, and report what the owner must do and by when.
+- Mail that can clearly be ignored (receipts, notices, newsletters, other people's builds): also mark read, but not the kinds in the next line.
+- When it may need the owner (a deadline, a payment, a failed charge, a security alert, a reply from a person, an order cancelled or refunded that they did not cancel or return themselves, terms to accept by a date or lose access): spawn one background subagent to read it, record what belongs in the repo, and report what the owner must do and by when.
 - Standing rules for particular senders go under "Sender rules" as they come up, one line each (e.g. "shop X marketing: unsubscribe on arrival").
 
 With the mail guard on, AUTO mail never reaches the desk, and:
