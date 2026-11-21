@@ -2,6 +2,7 @@
 """Session-start status: calendar today + tomorrow (when tools/calendar-today exists) and the last N commits.
 
 usage: overview.py [N]   (default 20)
+Commit lines are cut to 110 characters: Claude Code shows only a short preview of hook output over 10,000 characters.
 """
 import datetime
 import os
@@ -26,6 +27,7 @@ def main():
         print(f"# Calendar today + tomorrow\n{calendar()}\n")
     log = subprocess.run(["git", "-C", HERE, "log", f"-{n}", "--date=format:%m-%d %H:%M", "--format=%ad %s"],
                          capture_output=True, text=True).stdout
+    log = "".join((line if len(line) <= 110 else line[:109] + "…") + "\n" for line in log.splitlines())
     print(f"# Git log (last {n})\n{log}", end="")
 
 
