@@ -1,0 +1,24 @@
+# Agent fails the owner logged, replayed on each new model: bench/CLAUDE.md.
+types:
+  fails:
+    id: str  # short kebab name
+    date: date
+    repo: str
+    ref: str  # the git tag fail/<id>
+    session: str  # tmp/bench-sessions/<id>.jsonl.gz
+    model: str  # the one that failed
+    harness: str  # e.g. Claude Code
+    prompt: str  # the message, verbatim
+    happened: str
+    expected: str  # what the right move was, in the owner's words
+    tags: duplicate|duplicate-work|gave-up-early|guessed|incomplete|no-browser|no-context-check|no-question|no-search|overreach|rule-ignored|stale-knowledge|stale-state|wrong-scope|wrong-tool[]  # a new tag is added here first
+  runs:
+    fail: str  # the id of the fail replayed
+    date: date
+    model: str
+    harness: str
+    verdict: pass|fail
+    note: str?
+---
+fails: []
+runs: []

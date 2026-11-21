@@ -1,5 +1,5 @@
 #!/bin/bash
-# Snapshot a fail for bench/fails.json: tags the repo at the last commit before the bad turn
+# Snapshot a fail for bench/fails.tyaml: tags the repo at the last commit before the bad turn
 # and saves the session up to (not including) that turn.
 # usage: bench-snapshot.sh <fail-id> <repo-path> <session.jsonl> <uuid of the user message that started the bad turn>
 set -euo pipefail
