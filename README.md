@@ -28,7 +28,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 
 ## Background agents
 - **Morning brief and stop call:** the daily rhythm of the `Chief of Staff` chat - the day's plan in the morning, an honest look back and tomorrow in three lines in the evening.
-- **Calendar audit:** every night, checks the next 7 days against your goals and suggests changes.
+- **Calendar audit:** every night, checks the next 7 days against your goals and suggests changes; moves undone to-dos to today when the calendar tool can edit.
 - **News watch:** reads the news daily and tells you only what changes a decision, a date, money or your legal status.
 - **Weekly strategy review:** did the week move you toward your goals, and what should change in the whole strategy.
 - **Repo cleaner:** once a week, keeps the repo tidy - one fact in one place, no dead links.
