@@ -3,8 +3,8 @@
 - every session: Write/Edit of verdicts.jsonl or desk-chat-id next to this file (only guard.py writes them);
 - the mail desk's chat (ZUCCHINI_CHAT_ID equal to desk-chat-id, which `guard.py watch` records): sending mail (a send
   word outside quotes, SMTP, an MCP send tool) and changing the mail guard or the hooks' settings;
-- reading a mail the guard flagged or has not judged yet (its last route in verdicts.jsonl is FLAG or PENDING): Bash
-  naming its id with a read word or a URL, WebFetch or an MCP tool naming its id anywhere.
+- reading a mail the guard flagged, has not judged yet or routed to a job's chat (its last route in verdicts.jsonl is
+  FLAG, PENDING or CODE): Bash naming its id with a read word or a URL, WebFetch or an MCP tool naming its id anywhere.
 No verdicts file, no checks; unknown ids and tools pass. Fails open: on any error the call goes through.
 Docs: agents/mail-desk.md > "Mail guard"."""
 import json
@@ -33,6 +33,10 @@ REASONS = {
             "otherwise tell Chief of Staff.",
     "PENDING": "Mail guard: mail {id} is not judged yet; retry in a minute. If it comes back FLAG, do not open it "
                "another way. If it stays unjudged, the guard is down: agents/mail-desk.md > \"Mail guard\".",
+    "CODE": "Mail guard: mail {id} is a code-host notification for a job; its text is the employer's and stays out of "
+            "this repo's chats. Send the job chat the `GITHUB` line built from `python3 tools/mail-guard/guard.py "
+            "verdict {id}` as agents/mail-desk.md > \"Handling a mail\" says; the job chat reads the thread on the "
+            "code host.",
     "VERDICTS": "Mail guard: the verdicts are guard.py's alone; only it writes verdicts.jsonl and desk-chat-id. Read a "
                 "verdict with `python3 tools/mail-guard/guard.py verdict <id>`; never change one another way.",
     "SEND": "Mail guard: the mail desk never sends mail (no send, reply, forward or draft). Anything for a person goes "
@@ -108,7 +112,7 @@ def main():
     else:
         return
     last = routes()
-    for route in ("FLAG", "PENDING"):
+    for route in ("FLAG", "PENDING", "CODE"):
         for i, r in last.items():
             if r == route and len(i) >= 6 and i in text and re.search(rf"(?<![\w-]){re.escape(i)}(?![\w-])", text):
                 return deny(REASONS[route].format(id=i))

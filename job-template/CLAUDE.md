@@ -8,6 +8,7 @@
 - `<REPO>/`: the employer's repo, cloned here; its own `AGENTS.md` or `CLAUDE.md` holds the code rules. Each clone is listed in `.gitignore`, so the two repos never mix; clone others on demand the same way.
 - `AGENDA.md`, `people.tyaml`, `research/`: "Where knowledge goes" below.
 - <CHAT>, <TRACKER>, <MAIL>: the employer's chat, tracker and mail; agents read them <HOW, or "not at all">.
+- Code-host replies, once set up (`<PERSONAL_REPO>/setup.md` > "A job"), arrive from the personal mail desk as one line, `GITHUB <org/repo> #<number> <event>` (no `#<number>` when the notification has none): read the thread with `gh` as `<WORK_LOGIN>` (the per-command token in "Work identity"; with no number, like a release or a commit comment, find it in `gh api notifications`) and tell <NAME> who wrote what; no polling loop or watch for replies.
 
 ## What stays inside
 - The employer's documents, customer data and secrets never go into a pushed repo (one with a remote outside the employer) or into an AI tool the employer has not approved; they may live in this folder. Test data is synthetic or employer-approved.

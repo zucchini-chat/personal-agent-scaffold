@@ -29,6 +29,13 @@ Add a sender only on the owner's word: `<address>` or `@<domain>`.
 - notifications@github.com
 - no-reply@us.greenhouse-mail.io
 
+## Code-host routes
+One list item per org: `- <org> <job chat>`.
+- acme Acme work
+- `Beta` `Beta job`
+- gamma
+- ACME Acme again
+
 ## Switch on
 - eve@example.com
 """
@@ -90,8 +97,8 @@ if cmd == "raw":
 """
 
 
-def eml(sender, marker, subject="Hello", auth=(PASS,), body="Hello."):
-    head = "".join(f"Authentication-Results: {a}\n" for a in auth)
+def eml(sender, marker, subject="Hello", auth=(PASS,), body="Hello.", headers=""):
+    head = "".join(f"Authentication-Results: {a}\n" for a in auth) + headers
     return (f"{head}From: {sender}\nTo: owner@example.com\nSubject: {subject}\nDate: Sat, 07 Nov 2026 10:00:00 +0000\n"
             f"MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\n\n{body} STUB:{marker}\n")
 
@@ -311,6 +318,49 @@ class GuardTest(unittest.TestCase):
         text, truncated = g.mail_text(g.parse(eml("a@example.com", "notice", body="x" * 50).encode()))
         self.assertTrue(truncated and text.endswith("xxxxxxxxxx\n[body truncated]"))
 
+    # code-host routes
+
+    def test_github_mail_from_a_listed_org_skips_the_reader(self):
+        gh, listed = "Octo Dev <notifications@github.com>", "Message-ID: <acme/api/pull/42/c99@github.com>\n"
+        v = self.check(eml(gh, "inject", headers=listed + "X-GitHub-Reason: comment\n"))
+        self.assertEqual({k: v[k] for k in ("route", "reason", "cost_usd", "repo", "number", "event", "chat", "known_sender")},
+                         {"route": "CODE", "reason": "code-host route", "cost_usd": 0, "repo": "acme/api", "number": 42,
+                          "event": "comment", "chat": "Acme work", "known_sender": False})
+        v = self.check(eml(gh, "inject", headers="Message-ID: <x1@mail.github.com>\n"
+                           "In-Reply-To: <beta/web/issues/7@github.com>\nX-GitHub-Reason: Review requested\n"))
+        self.assertEqual((v["route"], v["repo"], v["number"], v["event"], v["chat"]),
+                         ("CODE", "beta/web", 7, "notification", "Beta job"))
+        v = self.check(eml(gh, "inject", headers="References: <x1@mail.github.com>\n"
+                           " <acme/web/pull/8/review/1@github.com>\nX-GitHub-Reason: Mention\n"))
+        self.assertEqual((v["route"], v["repo"], v["number"], v["event"]), ("CODE", "acme/web", 8, "mention"))
+        lid = "List-Id: acme/api <api.acme.github.com>\n"
+        for headers, repo, number in ((lid, "acme/api", None), ("List-Id: acme/api<api.acme.github.com>\n", "acme/api", None),
+                                      (lid + "Message-ID: <acme/api/releases/5@github.com>\n", "acme/api", None),
+                                      ("List-ID: Acme/site <site.Acme.github.com>\n"
+                                       "Message-ID: <Acme/site/discussions/12/c3@github.com>\n", "Acme/site", 12),
+                                      (lid + "Message-ID: <acme/api/repo-discussions/7/comments/5@github.com>\n", "acme/api", 7),
+                                      (lid + "Message-ID: <acme/web/pull/8@github.com>\n", "acme/api", None),
+                                      ("Message-ID: <acme/api/commit/42@github.com>\n", "acme/api", None),
+                                      ("Message-ID: <acme/api/pull/x42@github.com>\n", "acme/api", None)):
+            v = self.check(eml(gh, "inject", headers=headers))
+            self.assertEqual((v["route"], v["repo"], v["number"], v["chat"]), ("CODE", repo, number, "Acme work"))
+        for auth, dmarc in (((), "none"), ((FAIL,), "fail")):  # a listed org without DMARC pass: the owner looks
+            v = self.check(eml(gh, "inject", auth=auth, headers=listed))
+            self.assertEqual(v, {"route": "FLAG", "from": "notifications@github.com", "dmarc": dmarc, "known_sender": False,
+                                 "action": None, "risks": [], "reason": "code-host route, dmarc not pass", "cost_usd": 0,
+                                 "authserv": v["authserv"]})
+        self.assertEqual(self.calls(), [])
+        for sender, auth, headers in ((gh, (PASS,), "Message-ID: <other/api/pull/42/c99@github.com>\n"),  # unlisted org
+                                      (gh, (PASS,), "List-Id: other/api <api.other.github.com>\n" + listed),
+                                      (gh, (PASS,), "Message-ID: <gamma/api/pull/42/c99@github.com>\n"),  # no chat
+                                      ("noreply@github.com", (PASS,), listed),
+                                      (gh, (PASS,), "Message-ID: <x1@mail.github.com>\n"),  # no repo
+                                      (gh, (PASS,), "List-Id: acme <acme.github.com>\nMessage-ID: <acme@github.com>\n")):
+            v = self.check(eml(sender, "notice", auth=auth, headers=headers))
+            self.assertEqual(v["route"], "FLAG", (sender, auth, headers))  # the reader ran: a relay is never known
+        self.assertEqual(len(self.calls()), 6)
+        self.assertEqual(self.load().codehost(), {"acme": "Acme work", "beta": "Beta job"})  # an org's first entry wins
+
     # recheck
 
     def test_recheck(self):
@@ -347,19 +397,22 @@ class GuardTest(unittest.TestCase):
         self.mail("m-notice001", eml("ana@example.com", "notice", subject="m-notice001"))
         self.mail("m-inject001", eml("help@evil.test", "inject", subject="m-inject001"))
         self.mail("m-done00001", eml("ana@example.com", "notice", subject="m-done00001"))
+        self.mail("m-github001", eml("notifications@github.com", "notice", subject="m-github001",
+                                     headers="Message-ID: <acme/api/pull/42/c99@github.com>\n"))
         self.save({"id": "m-done00001", "account": "acct", "time": "t", "route": "AUTO"},
                   {"id": "m-leftover1", "account": "acct", "time": "t", "route": "PENDING"})
         with open(self.verdicts, "a") as f:
             f.write("not json\n")
         self.write(os.path.join(self.root, "feed.txt"),
                    "watching inbox\nNEW acct m-newsltr01\nNEW acct m-notice001\nNEW acct m-inject001\n"
-                   "NEW acct m-done00001\nNEW acct\nNEW acct m-notice001\nNEW acct m-leftover1\ndone\n")
+                   "NEW acct m-done00001\nNEW acct\nNEW acct m-notice001\nNEW acct m-leftover1\nNEW acct m-github001\n"
+                   "done\n")
         r = subprocess.run([sys.executable, os.path.join(self.dir, "guard.py"), "watch", "--tool", self.tool],
                            capture_output=True, encoding="utf-8", env=self.env, timeout=60)
         self.assertEqual((r.returncode, r.stderr), (3, ""))
         self.assertEqual(sorted(r.stdout.splitlines()), sorted([
             "watching inbox", "NEW acct", "done", "NEW acct m-leftover1", "NEW acct m-notice001",
-            "FLAG acct m-inject001"]))
+            "FLAG acct m-inject001", "CODE acct m-github001"]))
         judged = [re.search(r"Subject: (\S+)", c["mail"]).group(1) for c in self.calls()]
         self.assertEqual(judged, ["m-leftover1", "m-newsltr01", "m-notice001", "m-inject001"])
         for mid, c in zip(judged, self.calls()):  # PENDING was on file while the mail was judged
@@ -367,7 +420,7 @@ class GuardTest(unittest.TestCase):
             self.assertEqual(last["route"], "PENDING", mid)
         last = {rec["id"]: rec["route"] for rec in self.records()}
         self.assertEqual(last, {"m-done00001": "AUTO", "m-leftover1": "NEW", "m-newsltr01": "AUTO",
-                                "m-notice001": "NEW", "m-inject001": "FLAG"})
+                                "m-notice001": "NEW", "m-inject001": "FLAG", "m-github001": "CODE"})
         with open(os.path.join(self.root, "calls.log")) as f:
             tool_calls = [l for l in f.read().splitlines() if not l.startswith("raw ")]
         self.assertEqual(tool_calls, ["watch", "mark-read acct m-newsltr01", "mark m-newsltr01 guard: mark_read",

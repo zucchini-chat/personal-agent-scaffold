@@ -14,6 +14,7 @@ HOOK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hook.py")
 VERDICTS = """{"id": "flag-000001", "account": "acct", "route": "FLAG"}
 {"id": "pend-000001", "account": "acct", "route": "PENDING"}
 {"id": "new-0000001", "account": "acct", "route": "NEW"}
+{"id": "code-000001", "account": "acct", "route": "CODE"}
 {"id": "flip-000001", "account": "acct", "route": "FLAG"}
 {"id": "flip-000001", "account": "acct", "route": "NEW"}
 {"id": "abc12", "account": "acct", "route": "FLAG"}
@@ -73,6 +74,14 @@ class HookTest(unittest.TestCase):
     def test_reading_a_pending_mail_is_denied(self):
         r = self.bash(f"{MAIL} raw acct pend-000001")
         self.assertIn("mail pend-000001 is not judged yet; retry in a minute", r)
+
+    def test_reading_a_code_host_mail_is_denied(self):
+        r = self.bash(f"{MAIL} read acct code-000001")
+        self.assertIn("mail code-000001 is a code-host notification for a job", r)
+        self.assertIn("python3 tools/mail-guard/guard.py verdict code-000001", r)
+        self.assertIsNotNone(self.reason(B + "navigate", {"url": "https://mail.example.test/#inbox/code-000001"}))
+        for cmd in ("python3 tools/mail-guard/guard.py verdict code-000001", f'{MAIL} mark code-000001 "sent to job"'):
+            self.assertIsNone(self.bash(cmd), cmd)
 
     def test_url_browser_and_fetch_naming_the_id_are_denied(self):
         self.assertIsNotNone(self.bash('curl -s "https://mail.example.test/api/messages/flag-000001?format=raw"'))
