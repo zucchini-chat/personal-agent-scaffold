@@ -3,6 +3,7 @@
 # and saves the session up to (not including) that turn.
 # usage: bench-snapshot.sh <fail-id> <repo-path> <session.jsonl> <uuid of the user message that started the bad turn>
 set -euo pipefail
+[ $# -eq 4 ] || { grep -m1 '^# usage:' "$0" | cut -c3- >&2; exit 2; }
 id=$1 repo=$2 session=$3 uuid=$4
 bench=$(cd "$(dirname "$0")/../bench" && pwd)
 
