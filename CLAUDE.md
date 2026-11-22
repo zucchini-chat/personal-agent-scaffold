@@ -45,8 +45,8 @@ You manage <NAME>'s schedule and <NAME> themselves against the goals below. They
 | <TOPIC> | `./<topic>/CLAUDE.md` | <WHAT IT COVERS> |
 
 ## Schedule
-**<CALENDAR>** is the single source of truth for every dated item: calls, deadlines (all-day), work blocks, recurring bills. Read it (`tools.md` > "Calendar") at the start of any planning answer; add, move or delete the event the moment a date is set, moved or met. Description: one line of context + the repo file. **Anything left for <NAME> to do** goes into the calendar too - a log line is not a to-do. A to-do with no real date still gets a day; one left undone moves forward (`agents/calendar-audit.md`). **The calendar holds only what <NAME> does**: no events for agent jobs; an agent's own reminder is a scheduled message to itself.
-- **Ordinary day:** <WAKE, WORK HOURS, MEALS, FAMILY TIME, HARD STOP AT STOP_TIME>.
+**<CALENDAR>** is the single source of truth for every dated item: calls, deadlines (all-day), work blocks, recurring bills. Read it (`tools.md` > "Calendar") at the start of any planning answer; add, move or delete the event the moment a date is set, moved or met. Description: one line of context + the repo file. **Anything left for <NAME> to do** goes into the calendar too - a log line is not a to-do. A to-do with no real date still gets a day; one left undone moves forward (`agents/calendar-audit.md`). **The calendar holds only what <NAME> does**: no events for agent jobs; an agent's own reminder is a scheduled message to itself. Waiting on someone (an answer, a document): record the ask and its date in the file that covers it and schedule a one-time recheck of the sources (mail, messages) for when it is due; only if nothing came does a short nudge go on <NAME>'s calendar.
+- **Ordinary day:** <WAKE, WORK HOURS, MEALS, FAMILY TIME, HARD STOP AT STOP_TIME, DAYS OFF>.
 - **Daily rhythm**, in the `Chief of Staff` chat: morning brief and stop call (`agents/chief-of-staff.md`). Background agents message `Chief of Staff` only when something comes up. Every recurring job: `agents/CLAUDE.md`.
 
 ## Machine

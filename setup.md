@@ -16,10 +16,10 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 3. Roads: the paths they have already chosen toward those goals. Everything else is off-limits for nudges.
 4. Who they are: age, work, where they live and since when, where before, who lives with them, what they do off the clock.
 5. Home: address or neighbourhood. Look up the coordinates yourself and confirm them; that point is the "near me" centre.
-6. Ordinary weekday: wake, work hours, meals, family time, the hard stop. The stop time drives the "past <STOP_TIME> - stop" rule and the stop call.
+6. Ordinary weekday: wake, work hours, meals, family time, the hard stop, days off. The stop time drives the "past <STOP_TIME> - stop" rule and the stop call.
 7. Standing decisions: things already settled that agents must not re-propose.
 8. Contacts: which email is for what (sign-ups and shops vs people), phone, messenger.
-9. Calendar and mail: which ones they use. Nothing has to be plugged in now (`tools.md`).
+9. Calendar and mail: which ones they use, a work account's too. Nothing has to be plugged in now (`tools.md`).
 10. Topic areas: the 3-6 parts of life they want help with (work, health, money, home, kids, travel, food...).
 11. The machine: which one stays on, and whether Zucchini is installed on it.
 
@@ -28,7 +28,7 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 - One folder per topic: `<topic>/CLAUDE.md` with a title, one line on what it covers and a file table (`| File | Covers |`), plus a row in the topic table of `CLAUDE.md`. What they told you about that topic goes in there, not in the root file; a topic fact said before question 10 gets its folder right away.
 - `people.md`: everyone they named.
 - Times: set the morning brief and stop call times in `agents/chief-of-staff.md` and `agents/CLAUDE.md` from their ordinary day.
-- Calendar: if a calendar command already works, write `tools/calendar-today` (executable, prints today's and tomorrow's events one per line) and run `python3 tools/overview.py` to check it.
+- Calendar: if a calendar command already works, write `tools/calendar-today` as `tools.md` > "Calendar" says and run `python3 tools/overview.py` to check it.
 
 ## Shared browser (optional)
 One always-on Chrome with its own profile that every agent drives: [shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp). It is what lets agents do computer work on sites (forms, uploads, accounts). Rules: `tools.md` > "Browser". Needs Google Chrome and Node.js; if either is missing, ask before installing it. Offer the step; skip it if they decline.
