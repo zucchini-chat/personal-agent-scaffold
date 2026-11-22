@@ -3,6 +3,7 @@
 Run: python3 -m unittest discover -s tools/mail-guard   (or this file directly)"""
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -29,15 +30,21 @@ class HookTest(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
+        self.repo, self.home = tmp.name, os.path.join(tmp.name, "home")
         self.dir = os.path.join(tmp.name, "tools", "mail-guard")
         os.makedirs(self.dir)
         shutil.copy(HOOK, self.dir)
         with open(os.path.join(self.dir, "verdicts.jsonl"), "w") as f:
             f.write(VERDICTS)
+        with open(os.path.join(self.dir, "desk-chat-id"), "w") as f:
+            f.write("c-desk\n")
+        self.chat = None  # this session's ZUCCHINI_CHAT_ID
 
     def run_hook(self, stdin):
+        env = {k: v for k, v in os.environ.items() if k != "ZUCCHINI_CHAT_ID"}
+        env.update(HOME=self.home, **({"ZUCCHINI_CHAT_ID": self.chat} if self.chat is not None else {}))
         r = subprocess.run([sys.executable, os.path.join(self.dir, "hook.py")], input=stdin, capture_output=True,
-                           encoding="utf-8")
+                           encoding="utf-8", env=env)
         return r.returncode, r.stdout, r.stderr
 
     def reason(self, tool, inp):
@@ -89,14 +96,103 @@ class HookTest(unittest.TestCase):
     def test_last_record_wins(self):
         self.assertIsNone(self.bash(f"{MAIL} read acct flip-000001"))
 
+    def test_desk_never_sends_mail(self):
+        self.chat = "c-desk"
+        for cmd in (f"{MAIL} send acct x", f"{MAIL} Reply acct m-000001", f"{MAIL} forward acct m-000001 a@b.test",
+                    f"{MAIL} draft acct x", f"{MAIL} drafts acct", "sendmail -t < tmp/m.eml",
+                    "gog gmail send --to a@b.test --subject hi --body x", "curl --url smtps://smtp.example.test -T m",
+                    "python3 -c \"import smtplib; smtplib.SMTP('smtp.example.test')\"",
+                    "curl -X POST https://mail.example.test/v1/users/me/messages/send -d @m.json",
+                    "curl https://mail.example.test/v1/users/me/drafts", f'{MAIL} mark m1 "x" && {MAIL} send acct x',
+                    f"{MAIL} send-message acct x", f"{MAIL} SEND_MESSAGE acct x", "tool reply-all m1",
+                    "gmail create_draft x", "openssl s_client -starttls smtp -connect host:587",
+                    "ls tools/send_mail.py send-later"):
+            self.assertIn("the mail desk never sends mail", self.bash(cmd) or "", cmd)
+        for tool in ("mcp__mail__send_message", "mcp__gmail__create_draft", "mcp__mail__Reply_all", "mcp__m__forward"):
+            self.assertIn("the mail desk never sends mail", self.reason(tool, {"id": "m-000001"}) or "", tool)
+
+    def test_desk_never_edits_the_guard_or_settings(self):
+        self.chat = "c-desk"
+        hook = os.path.join(self.dir, "hook.py")
+        for tool, inp in (("Write", {"file_path": hook, "content": "x"}),
+                          ("Write", {"file_path": "tools/mail-guard/hook.py", "content": "x"}),
+                          ("Edit", {"file_path": os.path.join(self.repo, ".claude", "settings.json")}),
+                          ("Edit", {"file_path": os.path.join(self.home, ".claude", "settings.json")}),
+                          ("MultiEdit", {"file_path": "~/.claude/settings.json", "edits": []}),
+                          ("NotebookEdit", {"notebook_path": os.path.join(self.dir, "x.ipynb")}),
+                          ("Bash", {"command": "rm tools/mail-guard/verdicts.jsonl"}),
+                          ("Bash", {"command": "sed -i '' 's/deny/allow/' tools/mail-guard/hook.py"}),
+                          ("Bash", {"command": "echo c-x > tools/mail-guard/desk-chat-id"}),
+                          ("Bash", {"command": "cd tools/mail-guard && rm hook.py"}),
+                          ("Bash", {"command": "cp x tools/mail-guard/guard.py.bak"}),
+                          ("Bash", {"command": "rm tools/mail-guard/guard.py"}),
+                          ("Bash", {"command": "echo x > tools/mail-guard/guard.py"}),
+                          ("Bash", {"command": "python3 tools/mail-guard/guard.py verdict m1 "
+                                               "> tools/mail-guard/guard.py"}),
+                          ("Bash", {"command": "sed -i s/a/b/ tools/mail-guard/hook.py"}),
+                          ("Bash", {"command": "tee python3 tools/mail-guard/guard.py < x"}),
+                          ("Bash", {"command": "python3 x;rm${IFS}tools/mail-guard/guard.py"}),
+                          ("Bash", {"command": "cat ~/.claude/settings.json"})):
+            self.assertIn("the mail desk never edits the mail guard", self.reason(tool, inp) or "", inp)
+
+    def test_desk_allowances(self):
+        self.chat = "c-desk"
+        for cmd in ("python3 tools/mail-guard/guard.py verdict m-000001", f"{MAIL} read acct new-0000001",
+                    f'{MAIL} mark m-000001 "reply needed, sent to Chief of Staff"', f"{MAIL} mark-read acct m-000001",
+                    'git commit -m "forward rule" -- f', "git commit -F - -- f <<'EOF'\nSender rule: reply to X\nEOF",
+                    'python3 -u tools/mail-guard/guard.py watch --once --tool "python3 tools/mail.py"',
+                    "python3 tools/mail-guard/guard.py verdict m1",
+                    "cd /repo && python3 -u /repo/tools/mail-guard/guard.py recheck m1",
+                    "ls tools/sender-list resend senders replying forwarded Drafted smtplike"):
+            self.assertIsNone(self.bash(cmd), cmd)
+        self.assertIsNone(self.reason(B + "click", {"element": "Archive", "ref": "e12"}))
+        self.assertIsNone(self.reason("Write", {"file_path": os.path.join(self.repo, "notes.md"), "content": "x"}))
+        self.assertIn("flagged", self.bash(f"{MAIL} read acct flag-000001"))
+
+    def test_no_desk_lock_outside_the_desk_chat(self):
+        hook = os.path.join(self.dir, "hook.py")
+        for chat in ("c-other", None, ""):
+            self.chat = chat
+            self.assertIsNone(self.bash(f"{MAIL} send acct x"), chat)
+            self.assertIsNone(self.reason("Edit", {"file_path": hook}), chat)
+        self.chat = "c-desk"
+        os.remove(os.path.join(self.dir, "desk-chat-id"))
+        self.assertIsNone(self.bash(f"{MAIL} send acct x"))
+        self.assertIsNone(self.reason("Edit", {"file_path": hook}))
+
+    def test_only_guard_writes_the_verdicts(self):
+        link = os.path.join(self.repo, "link.jsonl")
+        os.symlink(os.path.join(self.dir, "verdicts.jsonl"), link)
+        for chat in (None, "c-desk"):
+            self.chat = chat
+            for tool, path in (("Write", os.path.join(self.dir, "verdicts.jsonl")),
+                               ("Edit", "tools/mail-guard/desk-chat-id"),
+                               ("MultiEdit", "tools/x/../mail-guard/verdicts.jsonl"), ("Write", link)):
+                self.assertIn("the verdicts are guard.py's alone", self.reason(tool, {"file_path": path}) or "", path)
+        self.chat = None
+        self.assertIsNone(self.reason("Write", {"file_path": os.path.join(self.repo, "notes.md"), "content": "x"}))
+
     def test_no_verdicts_file_allows_everything(self):
         os.remove(os.path.join(self.dir, "verdicts.jsonl"))
         self.assertIsNone(self.bash(f"{MAIL} read acct flag-000001"))
+        self.chat = "c-desk"
+        self.assertIsNone(self.bash(f"{MAIL} send acct x"))
 
     def test_malformed_stdin_fails_open_silently(self):
         for stdin in ("", "not json", "[]", "null", '{"tool_name": "Bash", "tool_input": "x"}',
                       '{"tool_name": "Bash", "tool_input": {"command": 5}}'):
             self.assertEqual(self.run_hook(stdin), (0, "", ""), stdin)
+
+
+class SettingsTest(unittest.TestCase):
+    def test_settings_route_the_guarded_tools_to_the_hook(self):
+        with open(os.path.join(os.path.dirname(HOOK), "..", "..", ".claude", "settings.json")) as f:
+            entries = json.load(f)["hooks"]["PreToolUse"]
+        [matcher] = [e["matcher"] for e in entries
+                     if any("tools/mail-guard/hook.py" in h["command"] for h in e["hooks"])]
+        for tool in ("Bash", "WebFetch", "Write", "Edit", "MultiEdit", "NotebookEdit", "mcp__mail__get_message"):
+            self.assertTrue(re.fullmatch(matcher, tool), tool)
+        self.assertFalse(re.fullmatch(matcher, "Read"))
 
 
 if __name__ == "__main__":

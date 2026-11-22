@@ -387,6 +387,21 @@ class GuardTest(unittest.TestCase):
             self.assertIn("guard.py watch [--once] --tool", r.stderr)
         self.assertFalse(os.path.exists(os.path.join(self.root, "calls.log")))
 
+    def test_watch_records_the_desk_chat(self):
+        desk = os.path.join(self.dir, "desk-chat-id")
+        self.write(os.path.join(self.root, "feed.txt"), "watching inbox\n")
+        self.guard("watch", "--tool", self.tool)
+        self.assertFalse(os.path.exists(desk))
+        self.guard("watch", "--tool", self.tool, env=dict(self.env, ZUCCHINI_CHAT_ID="c-desk"))
+        for args, chat in ((["--once"], "c-other"), ([], None), ([], "")):
+            env = self.env if chat is None else dict(self.env, ZUCCHINI_CHAT_ID=chat)
+            self.guard("watch", *args, "--tool", self.tool, env=env)
+            with open(desk) as f:
+                self.assertEqual(f.read(), "c-desk\n", (args, chat))
+        os.remove(desk)
+        os.mkdir(desk)  # unwritable: no lock, the watch still runs (guard() fails on a traceback)
+        self.guard("watch", "--tool", self.tool, env=dict(self.env, ZUCCHINI_CHAT_ID="c-desk"))
+
     def test_verdict_is_saved_before_the_line(self):
         g = self.load()
         self.mail("m-inject001", eml("help@evil.test", "inject"))

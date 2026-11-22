@@ -29,6 +29,7 @@ MODEL = "opus"
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 VERDICTS = os.path.join(HERE, "verdicts.jsonl")
+DESK_CHAT = os.path.join(HERE, "desk-chat-id")
 FREEMAIL = {  # anyone can get an address here: an exact address counts, a domain entry does not
     "gmail.com", "googlemail.com", "outlook.com", "hotmail.com", "live.com", "yahoo.com", "icloud.com", "me.com",
     "aol.com", "proton.me", "protonmail.com", "gmx.com", "gmx.de", "mail.ru", "yandex.ru", "protonmail.ch", "pm.me",
@@ -345,6 +346,13 @@ def feed(child, jobs, seen):
 
 
 def watch(tool, once=False):
+    chat = os.environ.get("ZUCCHINI_CHAT_ID")
+    if chat and not once:  # the desk's chat, which the hook locks down; a one-off poll from another chat is not it
+        try:
+            with open(DESK_CHAT, "w", encoding="utf-8") as f:
+                f.write(chat + "\n")
+        except OSError:  # no lock then, like the hook failing open; the watch goes on
+            pass
     jobs, last = queue.Queue(), records()
     for mid, r in last.items():
         if r.get("route") == "PENDING":  # judging was cut off: judge it first

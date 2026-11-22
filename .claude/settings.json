@@ -25,7 +25,7 @@
         ]
       },
       {
-        "matcher": "Bash|WebFetch|mcp__.*",
+        "matcher": "Bash|WebFetch|mcp__.*|Write|Edit|MultiEdit|NotebookEdit",
         "hooks": [
           {
             "type": "command",

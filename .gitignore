@@ -19,5 +19,8 @@ tools/data-guard/*private-data*
 # the mail guard's verdicts: they hold mail summaries (outside tmp/: a cleaned tmp/ would leave the hook inert)
 tools/mail-guard/verdicts.jsonl
 
+# the mail desk's chat id, written by guard.py watch, read by the hook
+tools/mail-guard/desk-chat-id
+
 # the mail tool's cursor, whose age is the mail desk's heartbeat (outside tmp/: a cleaned tmp/ would lose the cursor)
 tools/mail-watch-cursor
