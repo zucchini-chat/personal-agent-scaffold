@@ -1,12 +1,16 @@
 #!/bin/sh
-# pre-commit (git config core.hooksPath tools/git-hooks): the .tyaml type check on the commit's .tyaml files. Only
-# exit code 3 stops a commit; a crash, a missing python3 or anything else lets the commit through.
-# What it does: tools/tyaml.py
+# pre-commit (git config core.hooksPath tools/git-hooks): the .tyaml type check on the commit's .tyaml files, then the
+# duplicate check. Only exit code 3 stops a commit; a crash, a missing python3 or anything else lets the commit through.
+# What they do: tools/tyaml.py, tools/dup-check/hook.py
 set -f  # file names as written: no globbing, split on newlines only
 IFS='
 '
+dir="$(dirname "$0")/.."
 set -- $(git -c core.quotePath=false diff --cached --name-only --diff-filter=ACMR -- '*.tyaml')
-[ $# -eq 0 ] && exit 0
-python3 "$(dirname "$0")/../tyaml.py" "$@"
+if [ $# -gt 0 ]; then
+  python3 "$dir/tyaml.py" "$@"
+  [ $? -eq 3 ] && exit 1
+fi
+python3 "$dir/dup-check/hook.py"
 [ $? -eq 3 ] && exit 1
 exit 0
