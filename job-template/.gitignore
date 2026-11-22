@@ -1,0 +1,12 @@
+# the employer's clones: add every clone, so the two repos never mix
+/<REPO>/
+
+# agent scratch
+tmp/
+
+# local settings and Claude Code's worktrees
+/.claude/settings.local.json
+/.claude/worktrees/
+
+.DS_Store
+__pycache__/

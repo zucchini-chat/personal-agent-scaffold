@@ -21,6 +21,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `tools.md` | What is plugged in (calendar, mail, search, browser) and how to call it. Nothing that needs your accounts ships here. |
 | `agents/` | Background agents, one playbook each, all off until you switch one on. |
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |
+| `job-template/` | A notes repo for a job or contract, which setup copies out next to this repo so the employer's material never lands here: what agents may do in your name, where the employer's material may go, an agenda and a people file. |
 | `tools/overview.py` | Runs when a Claude Code session starts, clears or compacts (not on resume): your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
 | `tools/git-hooks/post-commit`, `tools/dup-check/` | After each commit, prints lines elsewhere in the repo like the ones just committed, so a fact stays in one place. Python standard library (`tools.md` > "Duplicate check"). |
 | `tools/git-hooks/pre-commit`, `tools/tyaml.py` | Before each commit, checks the `.tyaml` files in it against their own types and stops the commit on an error. Needs PyYAML (`tools.md` > "Typed YAML"). |
@@ -39,7 +40,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 They run on [Zucchini](https://zucchini.chat), which keeps agent chats alive on your own always-on machine: chats wake themselves with scheduled messages, react to watches and message each other, and you read and steer them from your phone. Details: `agents/CLAUDE.md`.
 
 ## Keep it private
-Everything you tell the agent lands in this repo. Push it only to a private remote; setup points `origin` there. Updates from this scaffold arrive through the repo cleaner, or through any chat you ask to update from the scaffold; either brings each new change over by meaning (`agents/repo-cleaner.md` > "Scaffold updates"). Secrets go in `credentials.txt`, which git ignores.
+Everything you tell the agent lands in this repo. Push it only to a private remote; setup points `origin` there. Work for an employer or client gets its own notes repo, which this one never holds (`setup.md` > "A job"). Updates from this scaffold arrive through the repo cleaner, or through any chat you ask to update from the scaffold; either brings each new change over by meaning (`agents/repo-cleaner.md` > "Scaffold updates"). Secrets go in `credentials.txt`, which git ignores.
 
 ## For the agent reading this
 If `CLAUDE.md` still starts with the "Not set up yet" line, run `setup.md` first. After setup, follow `CLAUDE.md`; this file is for humans.

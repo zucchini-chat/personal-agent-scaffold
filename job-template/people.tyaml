@@ -1,0 +1,19 @@
+# Who is who at <EMPLOYER>; add anyone new.
+types:
+  people:
+    name: str
+    aka: str[]?  # other spellings, nicknames
+    role: str
+    reports_to: str?  # their name as written in this file
+    area: str?  # what they own or build
+    login: str?  # code-host login
+    chat: str?  # chat id or handle
+    notes: str?
+---
+people:
+  - name: Jane Example  # example entry, delete it
+    aka: [Jane E]
+    role: engineering manager
+    area: billing service
+    login: jane-example
+    chat: jane.example

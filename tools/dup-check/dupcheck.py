@@ -4,7 +4,8 @@ import math, os, re, subprocess
 from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-EXCLUDE = ("bench/", "repo-reviews/", "weekly-reviews/")  # records that quote old lines verbatim
+# records that quote old lines verbatim; job-template/ restates this repo's rules so it stands alone once copied out
+EXCLUDE = ("bench/", "repo-reviews/", "weekly-reviews/", "job-template/")
 ENV = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}  # a hook's GIT_INDEX_FILE may be temporary
 K1, B = 1.2, 0.75
 
