@@ -27,6 +27,7 @@ Add a sender only on the owner's word: `<address>` or `@<domain>`.
 - @gmail.com
 - `bob.friend@gmail.com` (a friend)
 - notifications@github.com
+- no-reply@us.greenhouse-mail.io
 
 ## Switch on
 - eve@example.com
@@ -219,6 +220,7 @@ class GuardTest(unittest.TestCase):
         self.assertTrue(self.check(eml("Bob.Friend@gmail.com", "notice"))["known_sender"])
         self.assertFalse(self.check(eml("eve@example.com", "notice"))["known_sender"])  # listed outside the section
         self.assertFalse(self.check(eml("notifications@github.com", "notice"))["known_sender"])  # a relay never counts
+        self.assertFalse(self.check(eml("no-reply@us.greenhouse-mail.io", "notice"))["known_sender"])  # nor a hiring one
         self.assertFalse(self.check(eml("carol@mail.stripe.com", "notice"))["known_sender"])  # not from people.md either
         self.assertFalse(self.check(eml("ana@example.com.evil.test", "notice"))["known_sender"])
 

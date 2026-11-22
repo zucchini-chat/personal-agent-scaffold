@@ -38,7 +38,9 @@ RELAYS = {  # their mail carries other people's text: nothing on them or their s
     "google.com", "github.com", "gitlab.com", "linkedin.com", "facebookmail.com", "slack.com", "notion.so", "zoom.us",
     "stripe.com", "paypal.com", "docusign.net", "calendly.com", "substack.com", "medium.com", "microsoft.com",
     "amazon.com", "apple.com", "atlassian.net", "zendesk.com", "figma.com", "dropbox.com", "typeform.com",
-    "eventbrite.com", "meetup.com"}
+    "eventbrite.com", "meetup.com", "greenhouse.io", "greenhouse-mail.io", "lever.co", "ashbyhq.com", "workable.com",
+    "workablemail.com", "teamtailor.com", "teamtailor-mail.com", "smartrecruiters.com", "breezy.hr", "breezy-mail.com",
+    "personio.com", "personio.de", "recruitee.com", "bamboohr.com", "jobvite.com", "myworkday.com", "icims.com"}
 ACTIONS = ["ignore", "mark_read", "summarize"]
 RISKS = ["credentials", "money", "run_code", "contact_others", "talks_to_ai"]
 SCHEMA = {"type": "object", "additionalProperties": False, "required": ["action", "summary", "risks"],
