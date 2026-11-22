@@ -15,6 +15,7 @@ REPLAY = sys.argv[1] if len(sys.argv) > 1 else None
 CHAT = os.environ.get("ZUCCHINI_CHAT_ID") or os.environ.get("CLAUDE_CODE_SESSION_ID")  # who was shown a hit
 MAX_QUERIES, MAX_HITS = 40, 5
 AGENT = ("CLAUDECODE", "ZUCCHINI_CHAT_ID")  # set by Claude Code; by Zucchini for every agent it runs (Codex too)
+END_PUNCT = ".,;:!?()[]{}\"'“”‘’«»`*_"  # stripped from a word's ends when an edit is compared (words)
 FLOOR = 30  # raw BM25 score; how it was set and when to move it: tools.md > "Duplicate check"
 STOPPED = "Commit stopped by the duplicate check: a line you are committing may repeat a fact that already lives elsewhere, in another file or in the same one (the \"->\" lines)."
 UNSEEN = "Commit stopped by the duplicate check: DUP_OK passes only \"->\" lines a stop has already shown you, and these are new."
@@ -55,18 +56,25 @@ def hunks(commit):
             n += 1
 
 
+def words(text):
+    """Lowercased whitespace tokens without punctuation or markdown emphasis at their ends: `Signal,` and `**signal**`
+    are `signal`, while `$100` and `$-100` stay different."""
+    return [w for w in (t.strip(END_PUNCT) for t in text.lower().split()) if w]
+
+
 def changed(old, line):
     """The sentences of `line` to search: all of them for a new line; for an edit of one of `old` (most similar,
-    word-level ratio >= 0.5), only those holding inserted or replaced words - none when the edit only deleted."""
+    ratio of words >= 0.5), only those holding inserted or replaced words - none when the edit only deleted words
+    or changed case, end punctuation or emphasis."""
     sm = difflib.SequenceMatcher(None, autojunk=False)
-    sm.set_seq2(words(line))  # word tokens, so "late" and "late." match
+    sm.set_seq2(words(line))
     ratio = lambda o: (sm.set_seq1(words(o)), sm.quick_ratio())[1]
     sm.set_seq1(words(max(old, key=ratio)) if old else [])
     if sm.ratio() < 0.5:
         return sentences(line)
     new = {j for op, _, _, j1, j2 in sm.get_opcodes() if op in ("insert", "replace") for j in range(j1, j2)}
     out, i = [], 0
-    for s in sentences(line):  # sentences() keeps the word sequence, so word indices map onto sentences
+    for s in sentences(line):  # sentences() splits only at whitespace, so word indices map onto sentences
         n = len(words(s))
         if new & set(range(i, i + n)):
             out.append(s)
@@ -165,7 +173,7 @@ def timeout(*_):
 signal.signal(signal.SIGALRM, timeout)
 signal.alarm(6)
 try:
-    from dupcheck import ROOT, excluded, git, is_line, search, sentences, units, words
+    from dupcheck import ROOT, excluded, git, is_line, search, sentences, units
     main()
 except Exception as e:
     give_up(repr(e))
