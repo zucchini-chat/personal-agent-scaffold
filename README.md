@@ -22,7 +22,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `agents/` | Background agents, one playbook each, all off until you switch one on. |
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |
 | `job-template/` | A notes repo for a job or contract, which setup copies out next to this repo: what agents may do in your name, where the employer's material may go, an agenda and a people file. |
-| `tools/overview.py` | Runs when a Claude Code session starts, clears or compacts (not on resume): your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
+| `tools/overview.py` | Runs when a Claude Code session starts, clears or compacts (not on resume): the mail desk's health (when the desk is on), your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
 | `tools/git-hooks/post-commit`, `tools/dup-check/` | After each commit, prints lines elsewhere in the repo like the ones just committed, so a fact stays in one place. Python standard library (`tools.md` > "Duplicate check"). |
 | `tools/git-hooks/pre-commit`, `tools/tyaml.py` | Before each commit, checks the `.tyaml` files in it against their own types and stops the commit on an error. Needs PyYAML (`tools.md` > "Typed YAML"). |
 | `tools/data-guard/` | A Claude Code hook that stops an agent once when a web search, fetch, browser form or network command carries one of your private values (ID numbers, bank details, address), quoting when that value may go out. Off until you write its list (`tools.md` > "Data guard"). |

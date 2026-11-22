@@ -71,6 +71,8 @@ MAILTOOL = r"""#!PYTHON
 import os, sys, time
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 cmd, args = sys.argv[1], sys.argv[2:]
+with open(os.path.join(root, "calls.log"), "a") as f:
+    f.write(" ".join([cmd] + args) + "\n")
 if cmd == "watch":
     with open(os.path.join(root, "watch.pid"), "w") as f:
         f.write(str(os.getpid()))
@@ -79,8 +81,6 @@ if cmd == "watch":
             time.sleep(60)
         print(line, end="")
     sys.exit(3)
-with open(os.path.join(root, "calls.log"), "a") as f:
-    f.write(" ".join([cmd] + args) + "\n")
 print("tool noise", file=sys.stderr)
 if cmd == "raw":
     path = os.path.join(root, "mail", args[1] + ".eml")
@@ -370,8 +370,22 @@ class GuardTest(unittest.TestCase):
                                 "m-notice001": "NEW", "m-inject001": "FLAG"})
         with open(os.path.join(self.root, "calls.log")) as f:
             tool_calls = [l for l in f.read().splitlines() if not l.startswith("raw ")]
-        self.assertEqual(tool_calls, ["mark-read acct m-newsltr01", "mark m-newsltr01 guard: mark_read",
+        self.assertEqual(tool_calls, ["watch", "mark-read acct m-newsltr01", "mark m-newsltr01 guard: mark_read",
                                       "mark m-inject001 guard: FLAG"])
+
+    def test_watch_once(self):
+        self.write(os.path.join(self.root, "feed.txt"), "watching inbox\n")
+        self.assertEqual(self.guard("watch", "--once", "--tool", self.tool), "watching inbox\n")
+        with open(os.path.join(self.root, "calls.log")) as f:
+            self.assertEqual(f.read(), "watch --once\n")
+        os.remove(os.path.join(self.root, "calls.log"))
+        for args in (["watch", "--tool", self.tool, "--once"], ["watch", "--help"], ["watch", "--once", "--tool"],
+                     ["watch"]):
+            r = subprocess.run([sys.executable, os.path.join(self.dir, "guard.py"), *args], capture_output=True,
+                               encoding="utf-8", env=self.env, timeout=60)
+            self.assertNotEqual(r.returncode, 0, args)
+            self.assertIn("guard.py watch [--once] --tool", r.stderr)
+        self.assertFalse(os.path.exists(os.path.join(self.root, "calls.log")))
 
     def test_verdict_is_saved_before_the_line(self):
         g = self.load()

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Mail guard: judges every new mail before an agent with tools sees it. Docs: agents/mail-desk.md > "Mail guard".
 
-  guard.py watch --tool "<mail tool command>"  runs `<tool> watch`, settles AUTO mail itself, prints NEW and FLAG lines
-  guard.py verdict <id>                        the last record for that mail, one JSON line (null if none)
-  guard.py recheck <id>                        a FLAG whose only miss was an unknown sender turns NEW once listed
-  guard.py check <file.eml>                    judges a saved mail; prints the verdict and its authserv-id, stores nothing
+  guard.py watch [--once] --tool "<mail tool>"  runs `<tool> watch [--once]`, settles AUTO mail itself, prints NEW and FLAG lines
+  guard.py verdict <id>                         the last record for that mail, one JSON line (null if none)
+  guard.py recheck <id>                         a FLAG whose only miss was an unknown sender turns NEW once listed
+  guard.py check <file.eml>                     judges a saved mail; prints the verdict and its authserv-id, stores nothing
 
 The reader is one `claude -p` call with no tools in an empty temp dir; the gates (DMARC, known sender) are code."""
 import email
@@ -344,13 +344,13 @@ def feed(child, jobs, seen):
         jobs.put(None)
 
 
-def watch(tool):
+def watch(tool, once=False):
     jobs, last = queue.Queue(), records()
     for mid, r in last.items():
         if r.get("route") == "PENDING":  # judging was cut off: judge it first
             jobs.put((r.get("account", ""), mid))
-    child = subprocess.Popen([*tool, "watch"], stdout=subprocess.PIPE, encoding="utf-8", errors="replace",
-                             env=dict(os.environ, PYTHONUNBUFFERED="1"))
+    child = subprocess.Popen([*tool, "watch", *(["--once"] if once else [])], stdout=subprocess.PIPE, encoding="utf-8",
+                             errors="replace", env=dict(os.environ, PYTHONUNBUFFERED="1"))
     try:
         threading.Thread(target=feed, args=(child, jobs, set(last)), daemon=True).start()
         while (job := jobs.get()) is not None:
@@ -379,9 +379,9 @@ def shown(v):
 
 def main():
     args = sys.argv[1:]
-    if len(args) == 3 and args[:2] == ["watch", "--tool"]:
+    if args[:-1] in (["watch", "--tool"], ["watch", "--once", "--tool"]):
         signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))  # so the child is stopped too
-        sys.exit(watch(shlex.split(args[2])))
+        sys.exit(watch(shlex.split(args[-1]), once=args[1] == "--once"))
     if len(args) != 2:
         sys.exit(__doc__.strip())
     cmd, arg = args
