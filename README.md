@@ -36,6 +36,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 - **Repo cleaner:** once a week, keeps the repo tidy - one fact in one place, no dead links.
 - **Agent-fail bench:** logs the moments an agent got it wrong, to replay them on each new model.
 - **Mail desk:** watches your inbox and tells you what needs you. Opt-in: it reads every mail you get; a recommended mail guard screens each one first. For whoever dares.
+- **Chat reader:** reads your messenger or team chat as messages arrive, files the facts and tells you what needs you. Opt-in and read-only: it reads every room you are in.
 
 They run on [Zucchini](https://zucchini.chat), which keeps agent chats alive on your own always-on machine: chats wake themselves with scheduled messages, react to watches and message each other, and you read and steer them from your phone. Details: `agents/CLAUDE.md`.
 

@@ -9,6 +9,7 @@
 - `AGENDA.md`, `people.tyaml`, `research/`: "Where knowledge goes" below.
 - <CHAT>, <TRACKER>, <MAIL>: the employer's chat, tracker and mail; agents read them <HOW, or "not at all">.
 - Code-host replies, once set up (`<PERSONAL_REPO>/setup.md` > "A job"), arrive from the personal mail desk as one line, `GITHUB <org/repo> #<number> <event>` (no `#<number>` when the notification has none): read the thread with `gh` as `<WORK_LOGIN>` (the per-command token in "Work identity"; with no number, like a release or a commit comment, find it in `gh api notifications`) and tell <NAME> who wrote what; no polling loop or watch for replies.
+- Chat: the employer's own team chat is read, if at all, by a background chat in this folder, `<JOB> chat reader`, following `<PERSONAL_REPO>/agents/chat-reader.md` with its tool and login in this folder's `tools/`, reporting to `<JOB>`; a client's room on <NAME>'s own messenger arrives instead from the personal chat reader as `CHAT <room id> <n> <since> <until>`: read it with `<PERSONAL_REPO>/tools/<chat tool> read <room id> <since> <until>`, save what is new here and tell <NAME> what needs them; no polling loop or watch of the job chat's own.
 
 ## What stays inside
 - The employer's documents, customer data and secrets never go into a pushed repo (one with a remote outside the employer) or into an AI tool the employer has not approved; they may live in this folder. Test data is synthetic or employer-approved.

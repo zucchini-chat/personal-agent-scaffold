@@ -68,5 +68,5 @@ An agent with web search, a browser and a shell can put the owner's personal dat
 ## Money (optional)
 A read-only script over your bank's API printing balances, for the morning brief to flag a low balance before upcoming bills.
 
-## Messenger (optional)
-A read-only script over your messenger's API, so agents can search your chats. It never sends and never marks read.
+## Chat (optional)
+A read-only chat tool (never sends, reacts or marks read) for the chat reader and, through its `search`, any chat: `agents/chat-reader.md` > "What you plug in". Sending stays behind the go-ahead rule in `CLAUDE.md`.
