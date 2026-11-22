@@ -17,6 +17,7 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `CLAUDE.md` | The agent's instructions: its role, your goals, who you are, the working rules. A template until setup fills it. `AGENTS.md` links to it for Codex. |
 | `setup.md` | The setup interview. |
 | `people.md` | Who each recurring name is. |
+| `world-now.md` | Verified events past the model's training, so agents do not doubt real news. |
 | `tools.md` | What is plugged in (calendar, mail, search, browser) and how to call it. Nothing that needs your accounts ships here. |
 | `agents/` | Background agents, one playbook each, all off until you switch one on. |
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |

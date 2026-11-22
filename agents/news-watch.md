@@ -6,7 +6,7 @@ A background chat, `news reader`, reads the news once a day and sends only what 
 1. Schedule check (below). Run `python3 tools/news/fetch.py`; it prints the new items from the last 3 days across the feeds in the script, deduped against `tools/news/seen.txt`. The feeds are the watch list below turned into queries; keep the two in step.
 2. Skim the titles against the watch list. Open only the candidates and confirm the fact at a primary source where one exists (the official gazette, the regulator, the company's own release).
 3. Send when it passes the bar. One message per item: first line what happened, then why it matters for the owner, what to do (or "nothing, FYI"), the source link.
-4. Append a line to "Sent" below, commit it with `tools/news/seen.txt` and push.
+4. Append a line to "Sent" below for each send in step 3. A send or the daily item that meets the entry rule in `world-now.md` also gets a line there. Commit them with `tools/news/seen.txt` and push.
 
 ## The bar
 Send only if it changes a decision, a date, money or legal status for the owner - or is a concrete lead on one of their roads. Not: general politics, market moves, launches with no bearing on their roads, anything already in the repo. When unsure, wait a day for a primary source.
