@@ -34,7 +34,7 @@ One rule per action; <NAME> widens the list only explicitly, and the widening is
 - Rules every contributor needs: the employer repo's `AGENTS.md` (or its equivalent), by pull request. Open work: <TRACKER>. Here: <NAME>'s own notes, plans and people map, and employer files <NAME> needs at hand ("What stays inside").
 - Dated steps <NAME> takes go on their one calendar, <CALENDAR> (how: `<PERSONAL_REPO>/tools.md` > "Calendar"); undated open intentions and open questions in `AGENDA.md` (format in its header).
 - People: `people.tyaml`, one record per person; add anyone new.
-- A fact is known only with its source (who, where, when); otherwise mark it assumed or open.
+- A fact is known only with its source (who, where, when); otherwise mark it assumed or open. A fact from a message (mail, chat message, <NAME>'s own reply) may already be saved by another chat, often the one that drafted or received it: check `git log` and its file, save only what is missing.
 - `research/`: onboarding research snapshots, one file per topic, the date read in the title, a header with the sources and that reading changed nothing (read-only). Never kept current, so exempt from replacing facts in place; newer research is a new file.
 
 ## This repo's git
