@@ -12,8 +12,8 @@ Question: is anything in this repo worth changing, simplifying, de-duplicating o
 7. The commits and `repo-reviews/<date>.md` are the report. `SendMessage` to `Chief of Staff` only for a fact or decision only the owner has; never block on it.
 
 ## Criteria
-- One fact in one place; a second copy becomes a pointer, except in `job-template/` (`tools.md` > "Duplicate check"). `python3 tools/dup-check/search.py "<text>"` (or `<file.md>:<line>`) finds the copies of a line.
-- Read `bench/dup-check-fails.md` and act on it as `tools.md` > "Duplicate check" says: move the floor yourself; a reworded miss goes to the owner via `Chief of Staff`.
+- One fact in one place; a second copy becomes a pointer, except in `job-template/` (`.gitattributes`). `python3 one-fact-one-place/hooks/dupcheck_search.py "<text>"` (or `<file.md>:<line>`) finds the copies of a line.
+- Read `bench/dup-check-fails.md`. The check itself lives in `one-fact-one-place/`, which this repo never edits (a local edit breaks the update pull): misses or noise that keep coming back go to the owner via `Chief of Staff`, with the lines, to report upstream.
 - **Every line of the root `CLAUDE.md` earns its place on most tasks**: it loads into every session and subagent. A line only some tasks need moves to the file those tasks read, behind a pointer. A line that lags behind its topic file (a roads list naming a dropped road), names a tool or process that no longer exists, or repeats what both `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` already say is rewritten or dropped. Same test for each topic `CLAUDE.md`.
 - Flat folders with dozens of dated one-off files: group by kind when it cuts lookup time.
 - Tracked tools living in `tmp/` (agent scratch) belong in `tools/`.
@@ -28,6 +28,8 @@ Question: is anything in this repo worth changing, simplifying, de-duplicating o
 - When unsure, defer a week rather than change.
 
 ## Scaffold updates
+First update the memory hooks and storage rules: `git -C one-fact-one-place pull --ff-only` (missing clone: `setup.md` > "Before the questions" step 2); a failure goes into the report, the repo cleaner's to `Chief of Staff` too.
+
 The repo started as a copy of a public scaffold that keeps improving. It is not merged: the owner's files and playbooks have grown their own way, so a `git merge` would conflict every week. Instead: `git fetch -q <Source> master:refs/scaffold/master`, then read `git log --reverse <Last ported>..refs/scaffold/master` and each commit's `git show`. For each commit, carry the change over by meaning: apply what it fixes or adds to this repo's own version of the file, keep what the owner deliberately changed, skip what does not apply here. Commit as `Scaffold <short hash>: <what>`, with `Repo cleaner: ` in front when the cleaner runs it, then set Last ported to the newest commit read. One line per ported or skipped commit goes in `repo-reviews/<date>.md`.
 - Any chat runs this section when the owner asks ("update from the scaffold"), not only the weekly repo cleaner.
 - A commit that adds a dependency, a setup step, a hook or an opt-in agent: show the owner what it does and ask before installing or switching anything on (porting a hook switches it on); run its new setup step with them. The repo cleaner, which runs unattended, sends that question to `Chief of Staff`, notes the commit (hash and what it adds) under "Deferred" until the owner answers, acts on it once they do, and ports the rest.

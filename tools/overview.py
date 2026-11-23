@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Session-start status: the mail desk's health (when it is on), calendar today + tomorrow (when tools/calendar-today exists) and the last N commits.
+"""Session-start status: a line when the memory hooks are missing, the mail desk's health (when it is on), calendar today + tomorrow (when tools/calendar-today exists) and the last N commits.
 
 usage: overview.py [N]   (default 20)
 Commit lines are cut to 110 characters: Claude Code shows only a short preview of hook output over 10,000 characters.
@@ -14,6 +14,15 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CALENDAR = os.path.join(HERE, "calendar-today")
 AGENTS = os.path.join(os.path.dirname(HERE), "agents", "CLAUDE.md")
 CURSOR = os.path.join(HERE, "mail-watch-cursor")  # the mail tool touches it after every poll
+ROOT = os.path.dirname(HERE)
+RULES = os.path.join(ROOT, "one-fact-one-place", "RULES.md")
+
+
+def memory_hooks():
+    """True when core.hooksPath holds a pre-commit hook and the storage rules are there: the clone of setup.md step 2."""
+    path = subprocess.run(["git", "-C", ROOT, "config", "core.hooksPath"], capture_output=True, text=True).stdout.strip()
+    hook = os.path.join(ROOT, os.path.expanduser(path), "pre-commit")
+    return bool(path) and os.path.isfile(hook) and os.path.isfile(RULES)
 
 
 def calendar():
@@ -42,6 +51,8 @@ def mail_desk():
 def main():
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 20
     print(f"# Overview {datetime.datetime.now():%a %Y-%m-%d %H:%M}")
+    if not memory_hooks():
+        print("Memory hooks: MISSING - setup.md step 2")
     desk = mail_desk()
     if desk:
         print(f"Mail desk: {desk}")

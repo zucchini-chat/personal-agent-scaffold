@@ -9,7 +9,7 @@ It is a plain git repo of markdown files. The agent reads them, keeps them curre
 2. Start `claude` (or `codex`) in that folder and say hi.
 3. The agent sees that `CLAUDE.md` is still a template and runs a setup interview (`setup.md`, about 15 minutes): your goals in priority order, who you are, where home is, how you want to be addressed, the parts of life you want help with. It saves each answer into `CLAUDE.md` as you go (a cut-off interview resumes where it stopped), makes a folder per topic, and moves the repo to a private remote of yours.
 
-There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git (the `.tyaml` type check also needs PyYAML), plus an optional shared browser ([shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp): one always-on, logged-in Chrome for all your agents; Chrome and Node.js) that setup can switch on.
+There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git, plus the memory hooks setup clones (`one-fact-one-place/` below; their `.tyaml` type check also needs PyYAML) and an optional shared browser ([shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp): one always-on, logged-in Chrome for all your agents; Chrome and Node.js) that setup can switch on.
 
 ## What is inside
 | Path | What |
@@ -22,9 +22,8 @@ There is no installer. The code is a few small scripts that need nothing beyond 
 | `agents/` | Background agents, one playbook each, all off until you switch one on. |
 | `bench/` | Your own benchmark: moments an agent got it wrong, replayed on new models. |
 | `job-template/` | A notes repo for a job or contract, which setup copies out next to this repo: what agents may do in your name, where the employer's material may go, an agenda and a people file. |
-| `tools/overview.py` | Runs when a Claude Code session starts, clears or compacts (not on resume): the mail desk's health (when the desk is on), your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
-| `tools/git-hooks/pre-commit`, `tools/dup-check/` | Before each commit, finds lines in the repo like the ones being committed, so a fact stays in one place: an agent's commit stops until it fixes the hit or gives a reason; a person only sees it. Python standard library (`tools.md` > "Duplicate check"). |
-| `tools/git-hooks/pre-commit`, `tools/tyaml.py` | Before each commit, checks the `.tyaml` files in it against their own types and stops the commit on an error. Needs PyYAML (`tools.md` > "Typed YAML"). |
+| `tools/overview.py` | Runs when a Claude Code session starts, clears or compacts (not on resume): a line when the memory hooks are missing, the mail desk's health (when the desk is on), your calendar for today and tomorrow (once plugged in) and the last 20 commits. |
+| `one-fact-one-place/` | Not shipped: setup clones [one-fact-one-place](https://github.com/zucchini-chat/one-fact-one-place) here, git-ignored, and points git's hooks at it. Before each commit it stops an agent's commit that repeats a fact already in the repo or links to nothing (a person only sees the list) and checks `.tyaml` files against their own types. Its `RULES.md`, how agents store facts, loads into every session through `CLAUDE.md`. |
 | `tools/data-guard/` | A Claude Code hook that stops an agent once when a web search, fetch, browser form or network command carries one of your private values (ID numbers, bank details, address), quoting when that value may go out. Off until you write its list (`tools.md` > "Data guard"). |
 | `tools/mail-guard/` | For the mail desk: a model with no tools judges each new mail first, so the desk gets only a summary of a known sender's harmless mail, and a Claude Code hook stops agents reading a flagged one. Opt-in with the desk (`agents/mail-desk.md` > "Mail guard"). |
 

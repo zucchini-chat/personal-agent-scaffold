@@ -1,0 +1,8 @@
+# Left out of the commit check (one-fact-one-place/README.md > "Leaving files out").
+# records that quote old lines verbatim
+bench/** -dup-check
+repo-reviews/** -dup-check
+weekly-reviews/** -dup-check
+*-transcript.md -dup-check
+# restates this repo's rules on purpose, to stand alone once copied out; the repo cleaner leaves its copies too
+job-template/** -dup-check

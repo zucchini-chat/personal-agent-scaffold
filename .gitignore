@@ -5,6 +5,9 @@ __pycache__/
 # agent scratch
 tmp/
 
+# the memory hooks and storage rules: a clone of their own repo (setup.md step 2)
+/one-fact-one-place/
+
 # the shared browser's output (snapshots, console logs)
 .playwright-mcp/
 
