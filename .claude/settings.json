@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && python3 tools/overview.py"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && cat main-agent.md && echo && python3 tools/overview.py"
           }
         ]
       }

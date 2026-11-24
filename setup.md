@@ -1,6 +1,6 @@
 # Setup interview
 
-Run this when `CLAUDE.md` still starts with the "Not set up yet" line. Goal: every `<placeholder>` in `CLAUDE.md` replaced with the owner's own facts, in their words, and the repo moved to a private remote of theirs.
+Run this when `main-agent.md` still starts with the "Not set up yet" line. Goal: every `<placeholder>` in `CLAUDE.md` and `main-agent.md` replaced with the owner's own facts, in their words, and the repo moved to a private remote of theirs.
 
 **Save as you go.** A session can end mid-interview (a crash, a compaction, the owner walking off), and nothing said may be lost. Each step below (the steps before the questions, every question, every optional section) ends the same way, before the next one starts: write what you learned where it belongs ("Where answers go"), set `next:` in the "Not set up yet" line to the following step, commit by explicit path and push (locally only until the private remote is set). A session that finds that line starts at the step it names.
 
@@ -24,7 +24,7 @@ One at a time, in this order. A short follow-up when an answer is vague; never a
 11. The machine: which one stays on, and whether Zucchini is installed on it.
 
 ## Where answers go
-- Fill `CLAUDE.md` in place: keep its structure and rules, replace placeholders, set pronouns as they prefer. A skipped answer keeps its placeholder and is not asked again.
+- Fill `CLAUDE.md` and `main-agent.md` in place: keep their structure and rules, replace placeholders, set pronouns as they prefer. A skipped answer keeps its placeholder and is not asked again.
 - One folder per topic: `<topic>/CLAUDE.md` with a title, one line on what it covers and a file table (`| File | Covers |`), plus a row in the topic table of `CLAUDE.md`. What they told you about that topic goes in there, not in the root file; a topic fact said before question 10 gets its folder right away.
 - `people.md`: everyone they named.
 - Times: set the morning brief and stop call times in `agents/chief-of-staff.md` and `agents/CLAUDE.md` from their ordinary day.

@@ -7,14 +7,15 @@ It is a plain git repo of markdown files. The agent reads them, keeps them curre
 ## Start
 1. `git clone <this repo's URL> my-agent && cd my-agent`
 2. Start `claude` (or `codex`) in that folder and say hi.
-3. The agent sees that `CLAUDE.md` is still a template and runs a setup interview (`setup.md`, about 15 minutes): your goals in priority order, who you are, where home is, how you want to be addressed, the parts of life you want help with. It saves each answer into `CLAUDE.md` as you go (a cut-off interview resumes where it stopped), makes a folder per topic, and moves the repo to a private remote of yours.
+3. The agent sees that it is still a template and runs a setup interview (`setup.md`, about 15 minutes): your goals in priority order, who you are, where home is, how you want to be addressed, the parts of life you want help with. It saves each answer into `CLAUDE.md` and `main-agent.md` as you go (a cut-off interview resumes where it stopped), makes a folder per topic, and moves the repo to a private remote of yours.
 
 There is no installer. The code is a few small scripts that need nothing beyond Python 3 and git, plus the memory hooks setup clones (`one-fact-one-place/` below; their `.tyaml` type check also needs PyYAML) and an optional shared browser ([shared-chrome-mcp](https://github.com/zucchini-chat/shared-chrome-mcp): one always-on, logged-in Chrome for all your agents; Chrome and Node.js) that setup can switch on.
 
 ## What is inside
 | Path | What |
 |---|---|
-| `CLAUDE.md` | The agent's instructions: its role, your goals, who you are, the working rules. A template until setup fills it. `AGENTS.md` links to it for Codex. |
+| `CLAUDE.md` | Every agent's instructions, subagents included: your goals, who you are, the working rules. A template until setup fills it. |
+| `main-agent.md` | Only for the chats, kept from their subagents: the chief of staff role, the daily rhythm, delegation. Claude Code gets it from a session-start hook; `AGENTS.md` tells Codex to read both files. |
 | `setup.md` | The setup interview. |
 | `people.md` | Who each recurring name is. |
 | `world-now.md` | Verified events past the model's training, so agents do not doubt real news. |
@@ -43,4 +44,4 @@ They run on [Zucchini](https://zucchini.chat), which keeps agent chats alive on 
 Everything you tell the agent lands in this repo. Push it only to a private remote; setup points `origin` there. Work for an employer or client gets its own notes repo, which this one never holds (`setup.md` > "A job"). Updates from this scaffold arrive through the repo cleaner, or through any chat you ask to update from the scaffold; either brings each new change over by meaning (`agents/repo-cleaner.md` > "Scaffold updates"). Secrets go in `credentials.txt`, which git ignores.
 
 ## For the agent reading this
-If `CLAUDE.md` still starts with the "Not set up yet" line, run `setup.md` first. After setup, follow `CLAUDE.md`; this file is for humans.
+If `main-agent.md` still starts with the "Not set up yet" line, run `setup.md` first. After setup, follow `CLAUDE.md` and `main-agent.md`; this file is for humans.
