@@ -1,5 +1,7 @@
 # About <NAME>
 
+> **Setup check:** if `main-agent.md` starts with "Not set up yet" and you are the chat talking to the owner, not a subagent, run `setup.md` first.
+
 Personal context repo: life, work, documents, anything not tied to a code project. Each topic folder has its own `CLAUDE.md`; read it before answering in that area.
 
 ## How to work
